@@ -1,5 +1,8 @@
-
+import AuthProvider from "@/providers/AuthProvider";
 import { AppRouter } from "./router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function App() {
   window.addEventListener("load", (e) => {
@@ -10,6 +13,10 @@ export default function App() {
     }
   });
   return (
-    <AppRouter />
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

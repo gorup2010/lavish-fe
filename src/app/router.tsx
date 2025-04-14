@@ -1,9 +1,13 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from "@/components/layout/main-layout";
+import AuthLayout from "@/components/layout/auth-layout";
+
 import HomePage from "./home";
 import SearchProductPage from "./search-product";
-import LoginPage from "./login";
+import LoginPage from "./auth/login";
+import RegisterPage from "./auth/register";
 import ProductInformationPage from "./product-information";
+import { ProtectedRoute } from "./protected-route";
 
 const router = createBrowserRouter([
   {
@@ -18,14 +22,27 @@ const router = createBrowserRouter([
         element: <SearchProductPage />,
       },
       {
-        path: "/product-infor",
-        element: <ProductInformationPage />
-      }
+        path: "/product-info",
+        element: (
+          <ProtectedRoute>
+            <ProductInformationPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   {
-    path: "login",
-    element: <LoginPage />,
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
+      },
+    ],
   },
 ]);
 
