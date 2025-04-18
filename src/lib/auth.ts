@@ -1,17 +1,17 @@
 import { z } from "zod";
 
-import { api, api2 } from "./api-client";
-import { AuthResponse, RefreshResponse } from "@/types/api";
+import { api, authApi } from "./api-client";
+import { AuthResponse } from "@/types/api";
 
 export const getMyAccountInformation = (): Promise<AuthResponse> => {
-  return api2.get("/refresh");
+  return authApi.get("/refresh");
 };
 
-export const refreshToken = (): Promise<RefreshResponse> => {
-  return api2.get("/refresh");
+export const refreshToken = (): Promise<AuthResponse> => {
+  return authApi.get("/refresh");
 };
 
-export const logout = (): Promise<void> => {
+export const logout = (): Promise<string> => {
   return api.post("/logout");
 };
 
@@ -65,7 +65,6 @@ export const registerInputSchema = z
 
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
-// TODO: Fix
 export const registerWithEmailAndPassword = (
   data: RegisterInput
 ): Promise<AuthResponse> => {

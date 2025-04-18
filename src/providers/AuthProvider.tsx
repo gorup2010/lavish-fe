@@ -73,6 +73,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       async (error) => {
         const originalRequest = error.config;
 
+        // Access Token expiration error message and status
         if (
           error.response.status === 401 &&
           error.response.data.message === "Invalid Access Token"
@@ -93,7 +94,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
           }
         }
 
-        return error;
+        return Promise.reject(error);
       }
     );
 

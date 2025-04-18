@@ -10,11 +10,10 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-// TODO: change name
-export const api2 = axios.create({
+export const authApi = axios.create({
   baseURL: `${import.meta.env.VITE_BASE_URL}`,
   withCredentials: true,
 });
 
 api.interceptors.response.use(onResponseSuccess);
-api2.interceptors.response.use(onResponseSuccess);
+authApi.interceptors.response.use(onResponseSuccess);

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Search, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchModal } from "./search-modal";
+import DropMenu from "./drop-menu";
 
 const Navbar: React.FC = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -34,7 +35,10 @@ const Navbar: React.FC = () => {
       {menu.length ? (
         <ul className="hidden h-full gap-6 text-lg font-thin md:flex md:items-center">
           {menu.map((item) => (
-            <li key={item.title} className="flex h-full items-center hover:border-b-[0.25rem] hover:border-black">
+            <li
+              key={item.title}
+              className="flex h-full items-center hover:border-b-[0.25rem] hover:border-black"
+            >
               <Link
                 to={{
                   pathname: item.path,
@@ -49,11 +53,12 @@ const Navbar: React.FC = () => {
       ) : null}
       <div className="flex gap-4">
         <Button variant="ghost" size="icon" onClick={openSearch}>
-          <Search className="size-5" strokeWidth={1.5}/>
+          <Search className="size-5" strokeWidth={1.5} />
         </Button>
         <Button variant="ghost" size="icon">
           <ShoppingCart className="size-5" strokeWidth={1.5} />
         </Button>
+        <DropMenu />
       </div>
       <SearchModal isOpen={isSearchActive} onClose={closeSearch} />
     </nav>
