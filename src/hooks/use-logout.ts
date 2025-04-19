@@ -15,6 +15,7 @@ export const useLogout = () => {
       toast.error(error.message);
     },
     onSuccess: () => {
+      console.log("HHH");
       authContext.setAuth(undefined);
       return navigate("/login");
     },

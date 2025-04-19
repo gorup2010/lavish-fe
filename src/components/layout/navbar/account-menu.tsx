@@ -10,7 +10,7 @@ import {
 import { useLogout } from "@/hooks/use-logout";
 import { Loader2, User } from "lucide-react";
 
-export default function DropMenu() {
+export default function AccountMenu() {
   const { logout, isPending } = useLogout();
 
   return (

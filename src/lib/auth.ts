@@ -17,9 +17,9 @@ export const logout = (): Promise<string> => {
 
 export const test = () => {
   return api.get("/test");
-}
+};
 
-// TODO: test only. nhớ fix lại
+// TODO: test only. nhớ fix lại email thành z.string.email
 export const loginInputSchema = z.object({
   //email: z.string().email({ message: "Invalid email address." }),
   email: z.string(),
@@ -39,7 +39,8 @@ export const loginWithEmailAndPassword = (
 
 export const registerInputSchema = z
   .object({
-    email: z.string().email("Invalid email address").trim(),
+    //username: z.string().email("Invalid email address").trim(),
+    email: z.string(),
     firstname: z
       .string()
       .min(1, "")
@@ -47,7 +48,8 @@ export const registerInputSchema = z
       .trim(),
     lastname: z
       .string()
-      .regex(/^[A-Za-z][A-Za-z]$/, "Last name can only contain letters.")
+      .min(1, "")
+      .regex(/^[A-Za-z]*$/, "Last name can only contain letters.")
       .trim(),
     password: z
       .string()
