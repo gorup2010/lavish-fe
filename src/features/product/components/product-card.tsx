@@ -15,7 +15,9 @@ const ProductCard: FC = () => {
         </div>
       </div>
       <div className="px-1">
-        <p className="truncate">Nameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</p>
+        <p className="truncate">
+          Name
+        </p>
         <p>Star</p>
         <p>Price</p>
       </div>

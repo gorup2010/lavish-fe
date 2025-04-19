@@ -6,12 +6,12 @@ const onResponseSuccess = (response: AxiosResponse) => {
 }
 
 export const api = axios.create({
-  baseURL: `${import.meta.env.VITE_BASE_URL}`,
+  baseURL: `${import.meta.env.VITE_AUTH_URL}`,
   withCredentials: true,
 });
 
 export const authApi = axios.create({
-  baseURL: `${import.meta.env.VITE_BASE_URL}`,
+  baseURL: `${import.meta.env.VITE_AUTH_URL}`,
   withCredentials: true,
 });
 
