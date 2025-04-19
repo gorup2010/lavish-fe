@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form";
 import { registerInputSchema } from "@/lib/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useRegister } from "@/hooks/use-register";
+import { Loader2 } from "lucide-react";
 
 export default function RegisterPage({
   className,
@@ -30,8 +32,9 @@ export default function RegisterPage({
     },
   });
 
+  const { register, isPending, isError, errorMessage } = useRegister();
   const onSubmit = (values: z.infer<typeof registerInputSchema>) => {
-    console.log(values);
+    register(values);
   };
 
   return (
@@ -115,7 +118,14 @@ export default function RegisterPage({
             )}
           />
 
-          <Button type="submit" variant="default">
+          {isError && (
+            <div>
+              <p className="text-red-600 text-sm">{errorMessage}</p>
+            </div>
+          )}
+
+          <Button type="submit" disabled={isPending} variant="default">
+            {isPending && <Loader2 className="animate-spin" />}
             Register
           </Button>
           <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

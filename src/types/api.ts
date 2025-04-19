@@ -1,10 +1,7 @@
 export type AuthResponse = {
   id: number;
   username: string;
-  accessToken: string;
-};
-
-export type RefreshResponse = {
+  roles: string[];
   accessToken: string;
 };
 

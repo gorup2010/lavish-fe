@@ -1,25 +1,25 @@
 import { z } from "zod";
 
-import { api, api2 } from "./api-client";
-import { AuthResponse, RefreshResponse } from "@/types/api";
+import { api, authApi } from "./api-client";
+import { AuthResponse } from "@/types/api";
 
 export const getMyAccountInformation = (): Promise<AuthResponse> => {
-  return api2.get("/refresh");
+  return authApi.get("/refresh");
 };
 
-export const refreshToken = (): Promise<RefreshResponse> => {
-  return api2.get("/refresh");
+export const refreshToken = (): Promise<AuthResponse> => {
+  return authApi.get("/refresh");
 };
 
-export const logout = (): Promise<void> => {
+export const logout = (): Promise<string> => {
   return api.post("/logout");
 };
 
 export const test = () => {
   return api.get("/test");
-}
+};
 
-// TODO: test only. nhớ fix lại
+// TODO: test only. nhớ fix lại email thành z.string.email
 export const loginInputSchema = z.object({
   //email: z.string().email({ message: "Invalid email address." }),
   email: z.string(),
@@ -39,7 +39,8 @@ export const loginWithEmailAndPassword = (
 
 export const registerInputSchema = z
   .object({
-    email: z.string().email("Invalid email address").trim(),
+    //username: z.string().email("Invalid email address").trim(),
+    email: z.string(),
     firstname: z
       .string()
       .min(1, "")
@@ -47,7 +48,8 @@ export const registerInputSchema = z
       .trim(),
     lastname: z
       .string()
-      .regex(/^[A-Za-z][A-Za-z]$/, "Last name can only contain letters.")
+      .min(1, "")
+      .regex(/^[A-Za-z]*$/, "Last name can only contain letters.")
       .trim(),
     password: z
       .string()
@@ -65,7 +67,6 @@ export const registerInputSchema = z
 
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
-// TODO: Fix
 export const registerWithEmailAndPassword = (
   data: RegisterInput
 ): Promise<AuthResponse> => {
