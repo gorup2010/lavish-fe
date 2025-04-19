@@ -54,9 +54,10 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   // CANONICAL. Please don't touch it.
   useLayoutEffect(() => {
     const authInterceptor = api.interceptors.request.use((config: any) => {
-      config.headers.Authorization = !config._retry && auth
-        ? `Bearer ${auth.accessToken}`
-        : config.headers.Authorization;
+      config.headers.Authorization =
+        !config._retry && auth
+          ? `Bearer ${auth.accessToken}`
+          : config.headers.Authorization;
       return config;
     });
 
@@ -70,15 +71,14 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       (response) => {
         return response;
       },
-      async (error) => {
-        const originalRequest = error.config;
-
+      async (error: any) => {
         // Access Token expiration error message and status
         if (
-          error.response.status === 401 &&
-          error.response.data.message === "Invalid Access Token"
+          error.response?.status === 401 &&
+          error.response?.data?.message === "Invalid Access Token"
         ) {
           try {
+            const originalRequest = error.config;
             const response = await refreshToken();
             setAuth(
               (prev) =>

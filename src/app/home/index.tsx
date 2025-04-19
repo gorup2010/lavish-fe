@@ -1,5 +1,9 @@
+import { RequestFail } from "@/components/error/error-message";
 import { Button } from "@/components/ui/button";
+import { useProducts } from "@/features/product/api/get-products";
 import ProductCard from "@/features/product/components/product-card";
+import { ProductFilter } from "@/types/api";
+import { useEffect } from "react";
 
 function HomePage() {
   const images = [
@@ -7,6 +11,12 @@ function HomePage() {
     "https://images8.alphacoders.com/463/thumb-1920-463381.jpg",
     "https://images7.alphacoders.com/411/thumb-1920-411245.jpg",
   ];
+
+  const filter: ProductFilter = {
+    isFeatured: true,
+  };
+  const { data, isLoading, isError, refetch, error } = useProducts({ filter});
+  
   return (
     <div className="min-h-svh">
       {/* Hero Section */}
@@ -48,14 +58,15 @@ function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-10 px-16">
+          {/* <div className="grid md:grid-cols-4 gap-10 px-16">
             <ProductCard />
             <ProductCard />
             <ProductCard />
             <ProductCard />
             <ProductCard />
             <ProductCard />
-          </div>
+          </div> */}
+          {isError && <RequestFail retryRequest={refetch} error={error} />}
         </div>
       </section>
     </div>
