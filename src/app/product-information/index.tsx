@@ -13,7 +13,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import StarRatingBasic from "@/components/ui/star-rating-basic";
+import StarRatingBasic from "@/components/ui/star-rating";
 import { useState } from "react";
 
 function ProductInformationPage() {

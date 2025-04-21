@@ -1,22 +1,22 @@
-import { RequestFail } from "@/components/error/error-message";
 import { Button } from "@/components/ui/button";
-import { useProducts } from "@/features/product/api/get-products";
-import ProductCard from "@/features/product/components/product-card";
+import ProductCardList from "@/features/product/components/product-card-list";
 import { ProductFilter } from "@/types/api";
-import { useEffect } from "react";
 
 function HomePage() {
   const images = [
     "https://images8.alphacoders.com/403/thumb-1920-403604.jpg",
     "https://images8.alphacoders.com/463/thumb-1920-463381.jpg",
     "https://images7.alphacoders.com/411/thumb-1920-411245.jpg",
+    "https://tse2.mm.bing.net/th?id=OIP.H6W_BNVmOmlBjMGwNXtdpgHaHa&pid=Api",
   ];
 
   const filter: ProductFilter = {
-    isFeatured: true,
+    
+    // TODO: Remember to add this
+    sortBy: "createdOn",
+    orderBy: "desc",
   };
-  const { data, isLoading, isError, refetch, error } = useProducts({ filter});
-  
+
   return (
     <div className="min-h-svh">
       {/* Hero Section */}
@@ -58,15 +58,7 @@ function HomePage() {
             </p>
           </div>
 
-          {/* <div className="grid md:grid-cols-4 gap-10 px-16">
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-            <ProductCard />
-          </div> */}
-          {isError && <RequestFail retryRequest={refetch} error={error} />}
+          <ProductCardList filter={filter}/>
         </div>
       </section>
     </div>
