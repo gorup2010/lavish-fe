@@ -10,13 +10,14 @@ export type ErrorResponse = {
   message: string;
 }
 
-export type Meta = {
+export type PaginationResponse<T> = {
   page: number;
   total: number;
   totalPages: number;
+  data: T[];
 };
 
-export type ProductCard = {
+export type ProductCardDto = {
   id: number;
   name: string;
   price: number;
@@ -24,12 +25,13 @@ export type ProductCard = {
   thumbnailImg: string;
 }
 
+// TODO: Actually send {page, size, ...filter} not just only filter
 export type ProductFilter = Partial<{
   name: string;
   minPrice: number;
   maxPrice: number;
-  minRating: number;
-  maxRating: number;
   isFeatured: boolean;
-  brands: string[];
+  orderBy: string;
+  sortBy: string;
+  categoryIds: number[];
 }>

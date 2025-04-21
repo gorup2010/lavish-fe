@@ -1,25 +1,36 @@
-import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import StarRating from "@/components/ui/star-rating";
+import { formatVND } from "@/lib/utils";
+import { ProductCardDto } from "@/types/api";
+import { Heart, ShoppingBag } from "lucide-react";
 import { FC } from "react";
 
-const ProductCard: FC = () => {
+interface ProductCardProps {
+  product: ProductCardDto;
+}
+
+const ProductCard: FC<ProductCardProps> = ({ product }) => {
+  const { id, name, price, rating, thumbnailImg } = product;
+
   return (
     <div className="flex flex-col group cursor-pointer w-full">
       <div className="relative flex border-3 rounded-sm border-transparent hover:border-slate-200/35 bg-accent/10 items-center w-full h-[355px] overflow-hidden">
-        <img
-          src="https://tse2.mm.bing.net/th?id=OIP.H6W_BNVmOmlBjMGwNXtdpgHaHa&pid=Api"
-          className="m-auto"
-          alt="Super Watch"
-        />
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Heart className="h-6 w-6 text-rose-500 fill-white hover:fill-rose-500 transition-colors" />
+        <img src={thumbnailImg} className="m-auto" alt="Super Watch" />
+        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-2"
+          >
+            <ShoppingBag size={16} />
+            Add to cart
+          </Button>
         </div>
       </div>
-      <div className="px-1">
-        <p className="truncate">
-          Name
-        </p>
-        <p>Star</p>
-        <p>Price</p>
+      <div className="relative px-1 space-y-2.5">
+        <p className="truncate text-xl font-bold">{name}</p>
+        <StarRating value={rating} readOnly={true} />
+        <p className="font-semibold text-lg">{formatVND(price)}</p>
       </div>
     </div>
   );

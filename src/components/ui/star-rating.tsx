@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import React from "react";
 import { Star } from "lucide-react";
-import * as React from "react";
+import { cn } from "@/lib/utils";
 
 interface StarRatingBasicProps {
   value: number;
@@ -11,6 +11,7 @@ interface StarRatingBasicProps {
   iconSize?: number;
   maxStars?: number;
   readOnly?: boolean;
+  unactive?: boolean; // New prop for unactive state
   color?: string;
 }
 
@@ -39,7 +40,8 @@ const StarIcon = React.memo(
       onMouseEnter={onMouseEnter}
       className={cn(
         "transition-colors duration-200",
-        isInteractive && "cursor-pointer hover:scale-110"
+        isInteractive && "cursor-pointer hover:scale-110",
+        style.opacity && "opacity-50" // Apply opacity when specified in style
       )}
       style={style}
     />
@@ -47,51 +49,62 @@ const StarIcon = React.memo(
 );
 StarIcon.displayName = "StarIcon";
 
-const StarRating_Basic = ({
+const StarRating = ({
   className,
-  color = "#e4c616",
+  color = "black", // Changed default color to black
   iconSize = 24,
   maxStars = 5,
   onChange,
   readOnly = false,
+  unactive = false, // Default value for unactive prop
   value,
 }: StarRatingBasicProps) => {
   const [hoverRating, setHoverRating] = React.useState<number | null>(null);
 
+  const isInteractive = !readOnly && !unactive;
+
   const handleStarClick = React.useCallback(
     (index: number) => {
-      if (readOnly || !onChange) return;
+      if (!isInteractive || !onChange) return;
       const newRating = index + 1;
       onChange(newRating);
     },
-    [readOnly, onChange]
+    [isInteractive, onChange]
   );
 
   const handleStarHover = React.useCallback(
     (index: number) => {
-      if (!readOnly) {
+      if (isInteractive) {
         setHoverRating(index + 1);
       }
     },
-    [readOnly]
+    [isInteractive]
   );
 
   const handleMouseLeave = React.useCallback(() => {
-    if (!readOnly) {
+    if (isInteractive) {
       setHoverRating(null);
     }
-  }, [readOnly]);
+  }, [isInteractive]);
 
   const getStarStyle = React.useCallback(
     (index: number) => {
       const ratingToUse =
-        !readOnly && hoverRating !== null ? hoverRating : value;
-      return {
+        isInteractive && hoverRating !== null ? hoverRating : value;
+
+      const style: React.CSSProperties = {
         color: ratingToUse > index ? color : "gray",
         fill: ratingToUse > index ? color : "transparent",
-      } as React.CSSProperties;
+      };
+
+      // Add opacity for unactive state
+      if (unactive) {
+        style.opacity = 0.5;
+      }
+
+      return style;
     },
-    [readOnly, hoverRating, value, color]
+    [isInteractive, hoverRating, value, color, unactive]
   );
 
   const stars = React.useMemo(() => {
@@ -105,7 +118,7 @@ const StarRating_Basic = ({
           iconSize={iconSize}
           onClick={() => handleStarClick(index)}
           onMouseEnter={() => handleStarHover(index)}
-          isInteractive={!readOnly}
+          isInteractive={isInteractive}
         />
       );
     });
@@ -115,12 +128,16 @@ const StarRating_Basic = ({
     iconSize,
     handleStarClick,
     handleStarHover,
-    readOnly,
+    isInteractive,
   ]);
 
   return (
     <div
-      className={cn("flex items-center gap-x-0.5", className)}
+      className={cn(
+        "flex items-center gap-x-0.5",
+        unactive && "opacity-50",
+        className
+      )}
       onMouseLeave={handleMouseLeave}
     >
       {stars}
@@ -128,4 +145,4 @@ const StarRating_Basic = ({
   );
 };
 
-export default StarRating_Basic;
+export default StarRating;

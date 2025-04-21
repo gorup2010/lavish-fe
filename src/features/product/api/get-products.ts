@@ -1,23 +1,25 @@
-import { Meta, ProductCard, ProductFilter } from "@/types/api";
+import { PaginationResponse, ProductCardDto, ProductFilter } from "@/types/api";
 import { api } from "@/lib/api-client";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { infiniteQueryOptions, useInfiniteQuery } from "@tanstack/react-query";
 import { QueryConfig } from "@/lib/react-query";
 
-type UseProductsOptions = {
+type UseInfiniteProductsOptions = {
   filter?: ProductFilter;
-  page?: number;
   size?: number;
-  queryConfig?: QueryConfig<typeof getProductsQueryOptions>;
+  queryConfig?: QueryConfig<typeof getInfiniteProductsQueryOptions>;
 };
 
-type GetProductsOptions = Omit<UseProductsOptions, "queryConfig">;
+type GetInfiniteProductsOptions = Omit<UseInfiniteProductsOptions, "queryConfig">;
 
-export const getProducts = (
-  { filter, page = 1, size = 12}: GetProductsOptions
-): Promise<{
-  data: ProductCard[];
-  meta: Meta;
-}> => {
+export const getProducts = ({
+  filter,
+  page = 1,
+  size = 12,
+}: {
+    filter?: ProductFilter;
+    page?: number;
+    size?: number;
+}): Promise<PaginationResponse<ProductCardDto>> => {
   return api.get(`${import.meta.env.VITE_BASE_URL}/products`, {
     params: {
       page,
@@ -27,27 +29,30 @@ export const getProducts = (
   });
 };
 
-export const getProductsQueryOptions = (options: GetProductsOptions) => {
-  const { page, size, filter } = options;
-  return queryOptions({
-    queryKey: ["products", filter, page, size],
-    queryFn: () => {
-      const apiResponse = getProducts(options);
-      return apiResponse;
+export const getInfiniteProductsQueryOptions = (options: GetInfiniteProductsOptions) => {
+  const { size, filter } = options;
+
+  return infiniteQueryOptions({
+    queryKey: ["products", filter],
+    queryFn: async ({ pageParam = 1 }) => {
+      const res = await getProducts({ filter, page: pageParam });
+      return res;
     },
-    refetchOnWindowFocus: false,
-    retry: false,
+    getNextPageParam: (lastPage) => {
+      if (lastPage?.page === lastPage?.totalPages) return undefined;
+      const nextPage = lastPage.page + 1;
+      return nextPage;
+    },
+    initialPageParam: 1,
   });
 };
 
-export const useProducts = ({
+export const useInfiniteProducts = ({
   filter,
   queryConfig,
-  page = 1,
-  size = 12,
-}: UseProductsOptions) => {
-  return useQuery({
-    ...getProductsQueryOptions({ filter, page, size }),
+}: UseInfiniteProductsOptions) => {
+  return useInfiniteQuery({
+    ...getInfiniteProductsQueryOptions({ filter }),
     ...queryConfig,
   });
 };
