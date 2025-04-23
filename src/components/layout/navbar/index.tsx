@@ -5,7 +5,7 @@ import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AccountMenu from "./account-menu";
 import { Input } from "@/components/ui/input";
-import { CategoryMenu } from "./category-menu";
+import { CategoryMenu } from "../../../features/category/components/category-menu";
 
 const Navbar: React.FC = () => {
   return (

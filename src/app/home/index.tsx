@@ -14,7 +14,7 @@ function HomePage() {
     
     // TODO: Remember to add this
     sortBy: "createdOn",
-    orderBy: "desc",
+    sortOrder: "desc",
   };
 
   return (

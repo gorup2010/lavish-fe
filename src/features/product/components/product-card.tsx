@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import StarRating from "@/components/ui/star-rating";
 import { formatVND } from "@/lib/utils";
 import { ProductCardDto } from "@/types/api";
-import { Heart, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { FC } from "react";
 
 interface ProductCardProps {

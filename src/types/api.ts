@@ -8,7 +8,7 @@ export type AuthResponse = {
 export type ErrorResponse = {
   code: number;
   message: string;
-}
+};
 
 export type PaginationResponse<T> = {
   page: number;
@@ -23,7 +23,33 @@ export type ProductCardDto = {
   price: number;
   rating: number;
   thumbnailImg: string;
-}
+};
+
+export type CategoryDto = {
+  id: number;
+  name: string;
+  description: string;
+  thumbnailImg: string;
+};
+
+export type ImageDto = {
+  id: number;
+  url: string;
+  type: string;
+};
+
+export type ProductInformationDto = {
+  id: number;
+  name: string;
+  price: number;
+  rating: number;
+  description: string;
+  thumbnailImg: string;
+  isFeatured: boolean;
+  quantity: number;
+  categories: CategoryDto[];
+  images: ImageDto[];
+};
 
 // TODO: Actually send {page, size, ...filter} not just only filter
 export type ProductFilter = Partial<{
@@ -31,7 +57,7 @@ export type ProductFilter = Partial<{
   minPrice: number;
   maxPrice: number;
   isFeatured: boolean;
-  orderBy: string;
   sortBy: string;
+  sortOrder: string;
   categoryIds: number[];
-}>
+}>;
