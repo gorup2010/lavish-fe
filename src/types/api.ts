@@ -38,6 +38,18 @@ export type ImageDto = {
   type: string;
 };
 
+export type RatingDto = {
+  id: number;
+  comment: string;
+  star: number;
+  createdOn: string;
+  user: {
+    id: number;
+    firstname: string;
+    lastname: string;
+  }
+}
+
 export type ProductInformationDto = {
   id: number;
   name: string;
