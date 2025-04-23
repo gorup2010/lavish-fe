@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/carousel";
 import StarRating from "@/components/ui/star-rating";
 import { useProduct } from "@/features/product/api/get-product";
+import { RatingSection } from "@/features/rating/components/rating-section";
 import { formatVND } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -131,7 +132,8 @@ function ProductInformationPage() {
           </div>
         </div>
       </div>
-      <div className="">COMMENT SECTION</div>
+
+      <RatingSection productId={product.id} />
     </div>
   );
 }

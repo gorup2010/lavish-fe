@@ -1,5 +1,3 @@
-"use client";
-
 import ProductCardList from "@/features/product/components/product-card-list";
 import ProductFilterSection from "@/features/product/components/product-filter";
 import { ProductFilter } from "@/types/api";
