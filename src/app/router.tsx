@@ -22,11 +22,9 @@ const router = createBrowserRouter([
         element: <SearchProductPage />,
       },
       {
-        path: "/product-info",
+        path: "/products/:id",
         element: (
-          <ProtectedRoute>
             <ProductInformationPage />
-          </ProtectedRoute>
         ),
       },
     ],

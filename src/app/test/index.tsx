@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useX } from "@/hooks/mutation";import { logout, refreshToken, test } from "@/lib/auth";
+import { useX } from "@/boilerplate/mutation";import { logout, refreshToken, test } from "@/lib/auth";
 import { useAuth } from "@/providers/AuthProvider";
 import { useState } from "react";
 

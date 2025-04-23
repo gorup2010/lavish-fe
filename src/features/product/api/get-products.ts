@@ -34,16 +34,15 @@ export const getInfiniteProductsQueryOptions = (options: GetInfiniteProductsOpti
 
   return infiniteQueryOptions({
     queryKey: ["products", filter],
-    queryFn: async ({ pageParam = 1 }) => {
-      const res = await getProducts({ filter, page: pageParam });
-      return res;
+    queryFn: ({ pageParam = 0 }) => {
+       return getProducts({ filter, page: pageParam });
     },
     getNextPageParam: (lastPage) => {
       if (lastPage?.page === lastPage?.totalPages) return undefined;
       const nextPage = lastPage.page + 1;
       return nextPage;
     },
-    initialPageParam: 1,
+    initialPageParam: 0,
   });
 };
 
