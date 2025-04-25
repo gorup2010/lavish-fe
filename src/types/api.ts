@@ -25,6 +25,15 @@ export type ProductCardDto = {
   thumbnailImg: string;
 };
 
+export type ProductCardInAdminDto = {
+  id: number;
+  name: string;
+  price: number;
+  thumbnailImg: string;
+  createdOn: string;
+  quantity: number;
+}
+
 export type CategoryDto = {
   id: number;
   name: string;
@@ -72,4 +81,6 @@ export type ProductFilter = Partial<{
   sortBy: string;
   sortOrder: string;
   categoryIds: number[];
+  page: number;
+  size: number;
 }>;
