@@ -34,6 +34,22 @@ export type ProductCardInAdminDto = {
   quantity: number;
 }
 
+export type UserInAdminDto = {
+  id: number;
+  username: string;
+  firstname: string;
+  lastname: string;
+  createdOn: string;
+}
+
+export type CategoryInAdminDto = {
+  id: number;
+  name: string;
+  thumbnailImg: string;
+  description: string;
+  createdOn: string;
+}
+
 export type CategoryDto = {
   id: number;
   name: string;
@@ -81,6 +97,22 @@ export type ProductFilter = Partial<{
   sortBy: string;
   sortOrder: string;
   categoryIds: number[];
+  page: number;
+  size: number;
+}>;
+
+export type UserFilter = Partial<{
+  username: string;
+  sortBy: string;
+  sortOrder: string;
+  page: number;
+  size: number;
+}>;
+
+export type CategoryFilter = Partial<{
+  name: string;
+  sortBy: string;
+  sortOrder: string;
   page: number;
   size: number;
 }>;

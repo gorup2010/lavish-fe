@@ -7,7 +7,10 @@ import LoginPage from "./auth/login";
 import RegisterPage from "./auth/register";
 import ProductInformationPage from "./product-information";
 import AdminLayout from "@/components/layout/admin/admin-layout";
-import { AdminProductsPage } from "./admin/product";
+import { AdminProductsPage } from "./admin/products";
+import { AddProductPage } from "./admin/add-product";
+import { AddCategoryPage } from "./admin/add-category";
+import { AdminUsersPage } from "./admin/users";
 
 const router = createBrowserRouter([
   {
@@ -42,13 +45,38 @@ const router = createBrowserRouter([
   },
   {
     element: <AdminLayout />,
+    path: "/admin",
     children: [
       {
-        path: "/admin/products",
+        path: "products",
         element: (
             <AdminProductsPage />
         ),
-      }
+      },
+      {
+        path: "products/new",
+        element: (
+            <AddProductPage />
+        ),
+      },
+      {
+        path: "categories",
+        element: (
+            <div />
+        ),
+      },
+      {
+        path: "categories/new",
+        element: (
+            <AddCategoryPage />
+        ),
+      },
+      {
+        path: "users",
+        element: (
+            <AdminUsersPage />
+        ),
+      },
     ]
   }
 ]);

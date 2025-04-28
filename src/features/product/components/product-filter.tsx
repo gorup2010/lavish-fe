@@ -22,7 +22,9 @@ import { ProductFilter } from "@/types/api";
 import { useCategories } from "@/features/category/api/get-categories";
 import { LoadingBlock } from "@/components/loading/loading-block";
 import { RequestFail } from "@/components/error/error-message";
-import { FC } from "react";
+import { FC, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import qs from "qs";
 
 // Remove the isFeatured field from the schema
 const formSchema = z
@@ -48,25 +50,38 @@ const formSchema = z
     }
   );
 
+const defaultFilter = {
+  name: "",
+  minPrice: undefined,
+  maxPrice: undefined,
+  sortBy: "createdOn",
+  sortOrder: "desc",
+  categoryIds: [],
+};
+
 interface ProductFilterSectionProps {
-  setField: React.Dispatch<React.SetStateAction<ProductFilter>>;
+  filter: ProductFilter;
 }
 
-const ProductFilterSection : FC<ProductFilterSectionProps> = ({setField}) => {
+const ProductFilterSection: FC<ProductFilterSectionProps> = ({ filter }) => {
+  const navigate = useNavigate();
   // Update the defaultValues to remove isFeatured
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      minPrice: undefined,
-      maxPrice: undefined,
-      sortBy: "createdOn",
-      sortOrder: "desc",
-      categoryIds: [],
+      ...defaultFilter,
+      ...filter,
     },
   });
 
   const categoriesQuery = useCategories({});
+
+  useEffect(() => {
+    form.reset({
+      ...defaultFilter,
+      ...filter,
+    });
+  }, [filter, form]);
 
   if (categoriesQuery.isLoading) return <LoadingBlock />;
 
@@ -89,9 +104,7 @@ const ProductFilterSection : FC<ProductFilterSectionProps> = ({setField}) => {
       ...values,
       categoryIds: values.categoryIds?.length ? values.categoryIds : undefined,
     };
-
-    console.info("Filter values:", filter);
-    setField({...filter});
+    navigate(`/search?${qs.stringify(filter, { arrayFormat: "repeat" })}`);
   }
 
   return (
@@ -270,14 +283,12 @@ const ProductFilterSection : FC<ProductFilterSectionProps> = ({setField}) => {
             <Button type="reset" variant="outline" onClick={() => form.reset()}>
               Reset
             </Button>
-            <Button type="submit">
-              Apply Filters
-            </Button>
+            <Button type="submit">Apply Filters</Button>
           </div>
         </form>
       </Form>
     </div>
   );
-}
+};
 
 export default ProductFilterSection;
