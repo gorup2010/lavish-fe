@@ -25,7 +25,6 @@ export const getAdminProductsQueryOptions = (options: GetAdminProductsOptions) =
     queryKey: ["admin-products", options.filter],
     queryFn: () => {
       const apiResponse = getAdminProducts(options);
-      console.log(apiResponse);
       return apiResponse;
     },
     placeholderData: keepPreviousData,

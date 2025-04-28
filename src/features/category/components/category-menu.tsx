@@ -6,10 +6,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { CategoryList } from "./category-list";
+import { useState } from "react";
 
 export const CategoryMenu: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <button className="flex items-center gap-1 px-3 py-2 text-md font-medium hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
           Categories
@@ -17,7 +20,7 @@ export const CategoryMenu: React.FC = () => {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-[800px] p-2">
-        <CategoryList />
+        <CategoryList setIsOpen={setIsOpen}/>
       </DropdownMenuContent>
     </DropdownMenu>
   );

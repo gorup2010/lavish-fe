@@ -1,14 +1,14 @@
 import ProductCardList from "@/features/product/components/product-card-list";
 import ProductFilterSection from "@/features/product/components/product-filter";
-import { ProductFilter } from "@/types/api";
-import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import qs from "qs";
 
 export default function SearchProductPage() {
-
-  const [filter, setFilter] = useState<ProductFilter>({
-    sortBy: "createdOn",
-    sortOrder: "desc",
-  });
+  const location = useLocation();
+  const filter = qs.parse(location.search.slice(1));
+  if (filter.categoryIds && !Array.isArray(filter.categoryIds)) {
+    filter.categoryIds = [filter.categoryIds];
+  }
 
   return (
     <div className="min-h-svh py-20">
@@ -18,9 +18,21 @@ export default function SearchProductPage() {
         </div>
 
         {/* Filter section */}
-        <ProductFilterSection setField={setFilter}/>
+        <ProductFilterSection
+          filter={{
+            sortBy: "createdOn",
+            sortOrder: "desc",
+            ...filter,
+          }}
+        />
 
-        <ProductCardList filter={filter} />
+        <ProductCardList
+          filter={{
+            sortBy: "createdOn",
+            sortOrder: "desc",
+            ...filter,
+          }}
+        />
       </div>
     </div>
   );
