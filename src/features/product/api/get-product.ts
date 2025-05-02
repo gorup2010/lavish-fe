@@ -1,7 +1,7 @@
 import { api } from "@/lib/api-client";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { QueryConfig } from "@/lib/react-query";
-import { ProductInformationDto } from "@/types/api";
+import { ProductDetailsDto } from "@/types/api";
 
 type UseProductOptions = {
   id: string | undefined;
@@ -12,7 +12,7 @@ type GetProductOptions = Omit<UseProductOptions, "queryConfig">;
 
 export const getProduct = ({
   id,
-}: GetProductOptions): Promise<ProductInformationDto> => {
+}: GetProductOptions): Promise<ProductDetailsDto> => {
   return api.get(`${import.meta.env.VITE_BASE_URL}/products/${id}`);
 };
 

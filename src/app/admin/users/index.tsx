@@ -3,7 +3,6 @@ import { LoadingBlock } from "@/components/loading/loading-block";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
-import { useAdminProducts } from "@/features/product/api/get-admin-products";
 import { useAdminUsers } from "@/features/user/api/get-admin-users";
 import { UserFilter, UserInAdminDto } from "@/types/api";
 import {
@@ -27,10 +26,10 @@ const columns: ColumnDef<UserInAdminDto>[] = [
         </div>
       );
     },
-    size: 30,
+    size: 230,
   },
   {
-    accessorKey: "fisrtname",
+    accessorKey: "firstname",
     header: "Firstname",
     cell: ({ row }) => {
       return (
@@ -46,7 +45,7 @@ const columns: ColumnDef<UserInAdminDto>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2">
-          {row.getValue("firstname")}
+          {row.getValue("lastname")}
         </div>
       );
     },
@@ -68,7 +67,7 @@ export const AdminUsersPage = () => {
     []
   );
   const [filter, setFilter] = useState<UserFilter>(defaultFilter);
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
 
   const handlePageChange = (page: number) => {
     setFilter((prevFilter) => ({ ...prevFilter, page }));
@@ -85,14 +84,14 @@ export const AdminUsersPage = () => {
   };
 
   const handleNameChange = useCallback(() => {
-    if (name.trim().length !== 0) {
+    if (username.trim().length !== 0) {
       setFilter((prev) => ({
         ...prev,
-        name,
+        username,
         page: 0,
       }));
     }
-  }, [name]);
+  }, [username]);
 
   const dataQuery = useAdminUsers({ filter });
 
@@ -121,6 +120,7 @@ export const AdminUsersPage = () => {
     );
   }
 
+
   return (
     <div>
       <h1 className="text-6xl font-bold mb-10">Users</h1>
@@ -129,7 +129,7 @@ export const AdminUsersPage = () => {
         <Input
           placeholder="Search by username..."
           className="w-80"
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <Button onClick={handleNameChange}>Search</Button>
         <Button onClick={() => setFilter(defaultFilter)}>Reset</Button>

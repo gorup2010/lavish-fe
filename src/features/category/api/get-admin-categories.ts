@@ -13,7 +13,7 @@ type GetAdminCategoriesOptions = Omit<UseAdminCategoriesOptions, "queryConfig">;
 export const getAdminCategories = ({
   filter,
 }: GetAdminCategoriesOptions): Promise<PaginationResponse<CategoryInAdminDto>> => {
-  return api.get(`${import.meta.env.VITE_BASE_URL}/categories/admin`, {
+  return api.get(`${import.meta.env.VITE_BASE_URL}/admin/categories`, {
     params: {
       ...filter,
     }

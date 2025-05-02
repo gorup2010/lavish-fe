@@ -11,6 +11,8 @@ import { AdminProductsPage } from "./admin/products";
 import { AddProductPage } from "./admin/add-product";
 import { AddCategoryPage } from "./admin/add-category";
 import { AdminUsersPage } from "./admin/users";
+import { AdminCategoriesPage } from "./admin/categories";
+import { AdminProductDetails } from "./admin/product-details";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +56,12 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "products/:id",
+        element: (
+            <AdminProductDetails />
+        ),
+      },
+      {
         path: "products/new",
         element: (
             <AddProductPage />
@@ -62,7 +70,7 @@ const router = createBrowserRouter([
       {
         path: "categories",
         element: (
-            <div />
+            <AdminCategoriesPage />
         ),
       },
       {

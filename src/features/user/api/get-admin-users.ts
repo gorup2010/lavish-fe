@@ -13,7 +13,7 @@ type GetAdminUsersOptions = Omit<UseAdminUsersOptions, "queryConfig">;
 export const getAdminUsers = ({
   filter,
 }: GetAdminUsersOptions): Promise<PaginationResponse<UserInAdminDto>> => {
-  return api.get(`${import.meta.env.VITE_BASE_URL}/users/admin`, {
+  return api.get(`${import.meta.env.VITE_BASE_URL}/admin/users`, {
     params: {
       ...filter,
     }

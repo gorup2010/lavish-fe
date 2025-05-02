@@ -75,7 +75,7 @@ export type RatingDto = {
   }
 }
 
-export type ProductInformationDto = {
+export type ProductDetailsDto = {
   id: number;
   name: string;
   price: number;
