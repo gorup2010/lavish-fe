@@ -91,7 +91,7 @@ const columns: ColumnDef<CategoryInAdminDto>[] = [
   },
 ];
 
-export const AdminProductsPage = () => {
+export const AdminCategoriesPage = () => {
   const defaultData = useMemo(() => [], []);
   const defaultFilter = useMemo(
     () => ({ page: 0, size: 10, sortBy: "createdOn", sortOrder: "desc" }),

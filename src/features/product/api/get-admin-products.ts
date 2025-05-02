@@ -13,7 +13,7 @@ type GetAdminProductsOptions = Omit<UseAdminProductsOptions, "queryConfig">;
 export const getAdminProducts = ({
   filter,
 }: GetAdminProductsOptions): Promise<PaginationResponse<ProductCardInAdminDto>> => {
-  return api.get(`${import.meta.env.VITE_BASE_URL}/products/admin`, {
+  return api.get(`${import.meta.env.VITE_BASE_URL}/admin/products`, {
     params: {
       ...filter,
     }
