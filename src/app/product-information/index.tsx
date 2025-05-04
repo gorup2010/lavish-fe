@@ -8,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import ReturnIcon from "@/components/ui/return-icon";
 import StarRating from "@/components/ui/star-rating";
 import { useProduct } from "@/features/product/api/get-product";
 import { RatingSection } from "@/features/rating/components/rating-section";
@@ -79,7 +80,10 @@ function ProductInformationPage() {
 
   return (
     <div className="min-h-svh">
-      <div className="h-20" />
+      <div className="h-15" />
+      <div className="px-28 mb-5">
+        <ReturnIcon />
+      </div>
       <div>
         {/* Desktop layout */}
         <div className="hidden md:flex px-4 lg:px-28">

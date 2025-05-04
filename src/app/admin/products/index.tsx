@@ -17,6 +17,12 @@ import { Link } from "react-router-dom";
 
 const columns: ColumnDef<ProductCardInAdminDto>[] = [
   {
+    accessorKey: "id",
+    header: () => <></>,
+    cell: () => <></>,
+    maxSize: 0,
+  },
+  {
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -61,9 +67,15 @@ const columns: ColumnDef<ProductCardInAdminDto>[] = [
     accessorKey: "name",
     header: "Product",
     cell: ({ row }) => {
+      console.log(row.getValue("id"));
       return (
         <div className="flex items-center gap-2">
-          <Link to="#" className="font-medium hover:text-gray-500">{row.getValue("name")}</Link>
+          <Link
+            to={`${row.getValue("id")}`}
+            className="font-medium hover:text-gray-500"
+          >
+            {row.getValue("name")}
+          </Link>
         </div>
       );
     },
@@ -176,7 +188,9 @@ export const AdminProductsPage = () => {
             Delete ({table.getSelectedRowModel().rows.length})
           </Button>
         )}
-        <Button className="self-end">Add Product</Button>
+        <Button className="self-end">
+          <Link to="new">Add Product</Link>
+        </Button>
       </div>
 
       <DataTable

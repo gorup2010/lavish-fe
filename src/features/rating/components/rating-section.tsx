@@ -12,6 +12,7 @@ import { useInfiniteRatings } from "../api/get-ratings";
 import { LoadingBlock } from "@/components/loading/loading-block";
 import { RequestFail } from "@/components/error/error-message";
 import StarRating from "@/components/ui/star-rating";
+import { useCreateRating } from "../api/create-rating";
 
 const COMMENT_PREVIEW_LIMIT = 150;
 
@@ -19,13 +20,16 @@ interface RatingSectionProps {
   productId: number;
 }
 
-export const RatingSection : FC<RatingSectionProps> = ({ productId }) => {
+export const RatingSection: FC<RatingSectionProps> = ({ productId }) => {
   const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(0);
   const [expandedComments, setExpandedComments] = useState<number[]>([]);
+  const createRatingMutation = useCreateRating();
 
   const handleSubmitComment = () => {
-    console.log("Submitting comment:", comment);
+    createRatingMutation.mutate({ productId, star: rating, comment });
     setComment("");
+    setRating(0);
   };
 
   const toggleComment = (id: number) => {
@@ -72,9 +76,7 @@ export const RatingSection : FC<RatingSectionProps> = ({ productId }) => {
           <div className="flex items-center justify-end mt-2">
             <div className="star-rating-container">
               {/* User will insert their custom star rating component here */}
-              <span className="text-sm text-muted-foreground">
-                Your star rating component goes here
-              </span>
+              <StarRating readOnly={false} onChange={setRating} value={rating}/>
             </div>
           </div>
         </CardContent>
@@ -149,4 +151,4 @@ export const RatingSection : FC<RatingSectionProps> = ({ productId }) => {
       </div>
     </div>
   );
-}
+};

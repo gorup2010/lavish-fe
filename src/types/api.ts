@@ -88,6 +88,45 @@ export type ProductDetailsDto = {
   images: ImageDto[];
 };
 
+export type UpdateDetailsProductDto = {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  isFeatured: boolean;
+  quantity: number;
+  categoryId: number;
+};
+
+export type FileImageDto = {
+  id: number;
+  image: File;
+}
+
+export type DeleteImageDto = {
+  productId: number;
+  imageId: number;
+}
+
+export type CategoryDetailsDto = {
+  id: number;
+  name: string;
+  description: string;
+  thumbnailImg: string;
+}
+
+export type UpdateDetailsCategoryDto = {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export type CreateRatingDto = {
+  productId: number;
+  star: number;
+  comment: string;
+}
+
 // TODO: Actually send {page, size, ...filter} not just only filter
 export type ProductFilter = Partial<{
   name: string;

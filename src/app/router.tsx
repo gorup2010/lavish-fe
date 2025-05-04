@@ -13,6 +13,7 @@ import { AddCategoryPage } from "./admin/add-category";
 import { AdminUsersPage } from "./admin/users";
 import { AdminCategoriesPage } from "./admin/categories";
 import { AdminProductDetails } from "./admin/product-details";
+import { AdminCategoryDetails } from "./admin/category-details";
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,7 @@ const router = createBrowserRouter([
       {
         path: "/products/:id",
         element: <ProductInformationPage />,
-      }
+      },
     ],
   },
   {
@@ -51,42 +52,34 @@ const router = createBrowserRouter([
     children: [
       {
         path: "products",
-        element: (
-            <AdminProductsPage />
-        ),
+        element: <AdminProductsPage />,
       },
       {
         path: "products/:id",
-        element: (
-            <AdminProductDetails />
-        ),
+        element: <AdminProductDetails />,
       },
       {
         path: "products/new",
-        element: (
-            <AddProductPage />
-        ),
+        element: <AddProductPage />,
       },
       {
         path: "categories",
-        element: (
-            <AdminCategoriesPage />
-        ),
+        element: <AdminCategoriesPage />,
+      },
+      {
+        path: "categories/:id",
+        element: <AdminCategoryDetails />,
       },
       {
         path: "categories/new",
-        element: (
-            <AddCategoryPage />
-        ),
+        element: <AddCategoryPage />,
       },
       {
         path: "users",
-        element: (
-            <AdminUsersPage />
-        ),
+        element: <AdminUsersPage />,
       },
-    ]
-  }
+    ],
+  },
 ]);
 
 export const AppRouter = () => {

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import ProductCardList from "@/features/product/components/product-card-list";
 import { ProductFilter } from "@/types/api";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const images = [
@@ -11,7 +12,6 @@ function HomePage() {
   ];
 
   const filter: ProductFilter = {
-    
     // TODO: Remember to add this
     sortBy: "createdOn",
     sortOrder: "desc",
@@ -39,7 +39,7 @@ function HomePage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-black hover:bg-white/90">
-              Explore Collection
+              <Link to="/search">Explore Collection</Link>
             </Button>
           </div>
         </div>
@@ -58,7 +58,7 @@ function HomePage() {
             </p>
           </div>
 
-          <ProductCardList filter={filter}/>
+          <ProductCardList filter={filter} />
         </div>
       </section>
     </div>

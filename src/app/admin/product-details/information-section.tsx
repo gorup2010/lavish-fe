@@ -24,14 +24,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCategories } from "@/features/category/api/get-categories";
 import ReturnIcon from "@/components/ui/return-icon";
-import { ProductDetailsDto } from "@/types/api";
+import { ProductDetailsDto, UpdateDetailsProductDto } from "@/types/api";
 import _ from "lodash";
+import { UseMutationResult } from "@tanstack/react-query";
 
 interface InformationSectionProps {
   product: ProductDetailsDto;
+  updateProductMutation: UseMutationResult<void, Error, UpdateDetailsProductDto, unknown>;
 }
 
 const formSchema = z.object({
+  id: z.number(),
   name: z.string().min(10).max(200).trim(),
   price: z.number().min(1),
   description: z.string().min(10).max(255).trim(),
@@ -40,9 +43,10 @@ const formSchema = z.object({
   quantity: z.number().min(1),
 });
 
-export const InformationSection: FC<InformationSectionProps> = ({ product }) => {
+export const InformationSection: FC<InformationSectionProps> = ({ product, updateProductMutation }) => {
   const [isEditable, setIsEditable] = useState(false);
   const initialValues = useMemo(() => ({
+    id: product.id,
     name: product.name,
     price: product.price,
     description: product.description,
@@ -59,7 +63,7 @@ export const InformationSection: FC<InformationSectionProps> = ({ product }) => 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     if (isEditable) {
       if (!_.isEqual(data, initialValues)) {
-        console.log("send", data);
+        updateProductMutation.mutate(data as UpdateDetailsProductDto);
       }
       setIsEditable(false);
     } else {

@@ -17,6 +17,12 @@ import { Link } from "react-router-dom";
 
 const columns: ColumnDef<CategoryInAdminDto>[] = [
   {
+    accessorKey: "id",
+    header: () => <></>,
+    cell: () => <></>,
+    maxSize: 0,
+  },
+  {
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -63,7 +69,10 @@ const columns: ColumnDef<CategoryInAdminDto>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2">
-          <Link to="#" className="font-medium hover:text-gray-500">
+          <Link
+            to={`${row.getValue("id")}`}
+            className="font-medium hover:text-gray-500"
+          >
             {row.getValue("name")}
           </Link>
         </div>
@@ -176,7 +185,9 @@ export const AdminCategoriesPage = () => {
             Delete ({table.getSelectedRowModel().rows.length})
           </Button>
         )}
-        <Button className="self-end">Add Category</Button>
+        <Button className="self-end">
+          <Link to="new">Add Category</Link>
+        </Button>
       </div>
 
       <DataTable

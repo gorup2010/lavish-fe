@@ -22,7 +22,7 @@ import {
 import * as z from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CircleX, CloudUpload } from "lucide-react";
+import { CircleX, CloudUpload, Loader2 } from "lucide-react";
 import { useCategories } from "@/features/category/api/get-categories";
 import { LoadingBlock } from "@/components/loading/loading-block";
 import { RequestFail } from "@/components/error/error-message";
@@ -88,7 +88,14 @@ export const AddProductPage: FC = () => {
       ...defaultValues,
     },
   });
-  const createProductMutation = useCreateProduct();
+  const createProductMutation = useCreateProduct({
+    mutationConfig: {
+      onSuccess: () => {
+        form.reset();
+        setImagesCount(0);
+      },
+    },
+  });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     const formData = new FormData();
@@ -147,7 +154,15 @@ export const AddProductPage: FC = () => {
   if (!categories || categories.length === 0) return <div>No data</div>;
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="relative container mx-auto py-6">
+      {createProductMutation.isPending && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      )}
       <ReturnIcon />
       <h1 className="text-3xl font-bold mb-10 mt-4">Add new product</h1>
       <Form {...form}>
