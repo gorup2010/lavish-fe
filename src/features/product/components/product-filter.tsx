@@ -279,10 +279,17 @@ const ProductFilterSection: FC<ProductFilterSectionProps> = ({ filter }) => {
           </div>
 
           <div className="flex justify-end gap-1.5">
-            <Button type="reset" variant="outline" onClick={() => form.reset(defaultFilter)}>
+            <Button
+              type="reset"
+              variant="outline"
+              onClick={() => form.reset(defaultFilter)}
+            >
               Reset
             </Button>
             <Button type="submit">Apply Filters</Button>
+            {/* <Button type="button" onClick={() => console.log(form.getValues())}>
+              Clear Filters
+            </Button> */}
           </div>
         </form>
       </Form>
