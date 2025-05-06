@@ -1,11 +1,12 @@
 import { DeleteImageDto, FileImageDto, ProductDetailsDto } from "@/types/api";
-import { FC } from "react";
+import { FC, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { CloudUpload } from "lucide-react";
 import { UseMutationResult } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 interface ImageSectionProps {
   product: ProductDetailsDto;
@@ -27,11 +28,14 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-const fileSchema = z.instanceof(File).refine((file) => file.size <= MAX_FILE_SIZE, {
-  message: `Max file size is 5MB.`,
-}).refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
-  message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
-});
+const fileSchema = z
+  .instanceof(File)
+  .refine((file) => file.size <= MAX_FILE_SIZE, {
+    message: `Max file size is 5MB.`,
+  })
+  .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
+    message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
+  });
 
 export const ImageSection: FC<ImageSectionProps> = ({
   product,
@@ -39,6 +43,14 @@ export const ImageSection: FC<ImageSectionProps> = ({
   deleteImageMutation,
   updateThumbnailMutation,
 }) => {
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showUpdateThumbnailConfirm, setShowUpdateThumbnailConfirm] =
+    useState(false);
+  const [showAddConfirm, setShowAddConfirm] = useState(false);
+  const addImg = useRef<File>(null);
+  const updateImg = useRef<File>(null);
+  const deleteImgId = useRef<number>(null);
+
   const handleAddImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
@@ -46,13 +58,15 @@ export const ImageSection: FC<ImageSectionProps> = ({
       if (!parsedFile.success) {
         toast.error(parsedFile.error.message);
         return;
-      };
-      addImageMutation.mutate({ id: product.id, image: files[0]});
+      }
+      addImg.current = files[0];
+      setShowAddConfirm(true);
     }
   };
 
   const handleDeleteImage = (imageId: number) => {
-    deleteImageMutation.mutate({ productId: product.id, imageId: imageId });
+    deleteImgId.current = imageId;
+    setShowDeleteConfirm(true);
   };
 
   const handleUpdateThumbnail = async (
@@ -64,9 +78,46 @@ export const ImageSection: FC<ImageSectionProps> = ({
       if (!parsedFile.success) {
         toast.error(parsedFile.error.message);
         return;
-      };
-      updateThumbnailMutation.mutate({ id: product.id, image: files[0] });
+      }
+      updateImg.current = files[0];
+      setShowUpdateThumbnailConfirm(true);
     }
+  };
+
+  const handleAddConfirm = () => {
+    if (!addImg.current) {
+      console.warn("addImg.current is null");
+      return;
+    }
+    addImageMutation.mutate({ id: product.id, image: addImg.current });
+    addImg.current = null;
+    setShowAddConfirm(false);
+  };
+
+  const handleUpdateThumbnailConfirm = () => {
+    if (!updateImg.current) {
+      console.warn("updateImg.current is null");
+      return;
+    }
+    updateThumbnailMutation.mutate({
+      id: product.id,
+      image: updateImg.current,
+    });
+    updateImg.current = null;
+    setShowUpdateThumbnailConfirm(false);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (!deleteImgId.current) {
+      console.warn("deleteImgId.current is null");
+      return;
+    }
+    deleteImageMutation.mutate({
+      productId: product.id,
+      imageId: deleteImgId.current,
+    });
+    deleteImgId.current = null;
+    setShowDeleteConfirm(false);
   };
 
   return (
@@ -93,8 +144,7 @@ export const ImageSection: FC<ImageSectionProps> = ({
                     className="hidden"
                     multiple
                     onChange={handleUpdateThumbnail}
-                  />
-                  {" "}
+                  />{" "}
                   Change
                 </label>
               </Button>
@@ -143,6 +193,22 @@ export const ImageSection: FC<ImageSectionProps> = ({
           <div className="w-1/3"></div>
         </div>
       </div>
+
+      <ConfirmDialog
+        showConfirmDialog={showAddConfirm}
+        setShowConfirmDialog={setShowAddConfirm}
+        handleConfirm={handleAddConfirm}
+      />
+      <ConfirmDialog
+        showConfirmDialog={showDeleteConfirm}
+        setShowConfirmDialog={setShowDeleteConfirm}
+        handleConfirm={handleDeleteConfirm}
+      />
+      <ConfirmDialog
+        showConfirmDialog={showUpdateThumbnailConfirm}
+        setShowConfirmDialog={setShowUpdateThumbnailConfirm}
+        handleConfirm={handleUpdateThumbnailConfirm}
+      />
     </div>
   );
 };

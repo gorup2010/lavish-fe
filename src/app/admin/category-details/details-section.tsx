@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ import { UseMutationResult } from "@tanstack/react-query";
 import _ from "lodash";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 interface DetailsSectionProps {
   category: CategoryDetailsDto;
@@ -68,6 +69,10 @@ export const DetailsSection: FC<DetailsSectionProps> = ({
   updateCategoryMutation,
   updateThumbnailMutation,
 }) => {
+  const [showUpdateThumbnailConfirm, setShowUpdateThumbnailConfirm] =
+    useState(false);
+  const [showUpdateConfirm, setShowUpdateConfirm] = useState(false);
+  const updateImg = useRef<File>(null);
   const [isEditable, setIsEditable] = useState(false);
   const initialValues = useMemo(
     () => ({
@@ -87,12 +92,29 @@ export const DetailsSection: FC<DetailsSectionProps> = ({
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     if (isEditable) {
       if (!_.isEqual(data, initialValues)) {
-        updateCategoryMutation.mutate(data as UpdateDetailsCategoryDto);
+        setShowUpdateConfirm(true);
+      } else {
+        setIsEditable(false);
       }
-      setIsEditable(false);
     } else {
       setIsEditable(true);
     }
+  };
+
+  const onUpdateConfirm = () => {
+    updateCategoryMutation.mutate(form.getValues() as UpdateDetailsCategoryDto);
+    setShowUpdateConfirm(false);
+    setIsEditable(false);
+  };
+
+  const onUpdateThumbnailConfirm = () => {
+    if (!updateImg.current) return;
+    updateThumbnailMutation.mutate({
+      id: category.id,
+      image: updateImg.current,
+    });
+    updateImg.current = null;
+    setShowUpdateThumbnailConfirm(false);
   };
 
   const handleUpdateThumbnail = async (
@@ -105,7 +127,8 @@ export const DetailsSection: FC<DetailsSectionProps> = ({
         toast.error(parsedFile.error.message);
         return;
       }
-      updateThumbnailMutation.mutate({ id: category.id, image: files[0] });
+      updateImg.current = files[0];
+      setShowUpdateThumbnailConfirm(true);
     }
   };
 
@@ -205,6 +228,17 @@ export const DetailsSection: FC<DetailsSectionProps> = ({
           </div>
         </form>
       </Form>
+
+      <ConfirmDialog
+        showConfirmDialog={showUpdateConfirm}
+        setShowConfirmDialog={setShowUpdateConfirm}
+        handleConfirm={onUpdateConfirm}
+      />
+      <ConfirmDialog
+        showConfirmDialog={showUpdateThumbnailConfirm}
+        setShowConfirmDialog={setShowUpdateThumbnailConfirm}
+        handleConfirm={onUpdateThumbnailConfirm}
+      />
     </div>
   );
 };

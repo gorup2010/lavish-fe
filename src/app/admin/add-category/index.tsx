@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CircleX, CloudUpload, Loader2 } from "lucide-react";
 import ReturnIcon from "@/components/ui/return-icon";
 import { useCreateCategory } from "@/features/category/api/create-category";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -27,7 +28,7 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const formSchema = z.object({
   name: z.string().min(10).max(200).trim(),
-  description: z.string().max(255).trim(),
+  description: z.string().min(10).max(255).trim(),
   thumbnailImg: z
     .instanceof(File, { message: "Thumbnail image is required." })
     .refine((file) => file.size <= MAX_FILE_SIZE, {
@@ -46,7 +47,9 @@ const defaultValues = {
 };
 
 export const AddCategoryPage: FC = () => {
+  const [showConfirm, setShowConfirm] = useState(false);
   const [imagesCount, setImagesCount] = useState(0);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,16 +61,22 @@ export const AddCategoryPage: FC = () => {
       onSuccess: () => {
         form.reset();
       },
-    }
-  })
+    },
+  });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    setShowConfirm(true);
+  };
+
+  const onConfirm = () => {
+    const data = form.getValues();
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("description", data.description);
     formData.append("thumbnailImg", data.thumbnailImg);
     createCategoryMutation.mutate(formData);
-  };
+    setShowConfirm(false);
+  }
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -139,7 +148,7 @@ export const AddCategoryPage: FC = () => {
                 )}
               />
             </div>
-            
+
             {/* Thumbnail Field */}
             <div className="row-span-4 col-start-2 row-start-1">
               <FormField
@@ -182,6 +191,14 @@ export const AddCategoryPage: FC = () => {
           </div>
         </form>
       </Form>
+
+      {showConfirm && (
+        <ConfirmDialog
+          showConfirmDialog={showConfirm}
+          setShowConfirmDialog={setShowConfirm}
+          handleConfirm={onConfirm}
+        />
+      )}
     </div>
   );
 };

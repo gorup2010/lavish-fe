@@ -1,12 +1,7 @@
+import { useLogout } from "@/hooks/use-logout";
 import { List, SquareUserRound, Watch } from "lucide-react";
 import { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-
-type SidebarItem = {
-  name: string;
-  path: string;
-  icon: FC;
-};
 
 function urlMatch(pageToMatch: string, url: string) {
   if (pageToMatch === "users") {
@@ -23,6 +18,7 @@ function urlMatch(pageToMatch: string, url: string) {
 
 const AdminSidebar: FC = () => {
   const location = useLocation();
+  const { logout, isPending } = useLogout();
 
   return (
     <div>
@@ -31,7 +27,7 @@ const AdminSidebar: FC = () => {
         className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform translate-x-0 bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
         aria-label="Sidebar"
       >
-        <div className="h-40 flex items-center justify-center text-5xl font-extralight">Lavish</div>
+        <Link to="/" className="h-40 flex items-center justify-center text-5xl font-extralight">Lavish</Link>
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
             <li>

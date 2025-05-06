@@ -25,6 +25,13 @@ export default function AccountMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        {
+          auth?.roles.includes("ADMIN") && (
+            <DropdownMenuItem>
+              <Link to="/admin/users">Admin</Link>
+            </DropdownMenuItem>
+          )
+        }
         <DropdownMenuSeparator />
         {auth?.username !== undefined ? (
           <DropdownMenuItem disabled={isPending} onClick={() => logout()}>
