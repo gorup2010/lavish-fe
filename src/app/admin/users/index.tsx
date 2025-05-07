@@ -15,12 +15,21 @@ import { Link } from "react-router-dom";
 
 const columns: ColumnDef<UserInAdminDto>[] = [
   {
+    accessorKey: "id",
+    header: () => <></>,
+    cell: () => <></>,
+    maxSize: 0,
+  },
+  {
     accessorKey: "username",
     header: "Username",
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2">
-          <Link to="#" className="font-medium hover:text-gray-500">
+          <Link
+            to={`${row.getValue("id")}`}
+            className="font-medium hover:text-gray-500"
+          >
             {row.getValue("username")}
           </Link>
         </div>
@@ -120,7 +129,6 @@ export const AdminUsersPage = () => {
     );
   }
 
-
   return (
     <div>
       <h1 className="text-6xl font-bold mb-10">Users</h1>
@@ -130,9 +138,17 @@ export const AdminUsersPage = () => {
           placeholder="Search by username..."
           className="w-80"
           onChange={(e) => setUsername(e.target.value)}
+          value={username}
         />
         <Button onClick={handleNameChange}>Search</Button>
-        <Button onClick={() => setFilter(defaultFilter)}>Reset</Button>
+        <Button
+          onClick={() => {
+            setFilter(defaultFilter);
+            setUsername("");
+          }}
+        >
+          Reset
+        </Button>
         <div className="flex-1"></div>
       </div>
 

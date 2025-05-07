@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import ReturnIcon from "@/components/ui/return-icon";
 import {
   CategoryDetailsDto,
+  DeleteCategoryDto,
   FileImageDto,
   UpdateDetailsCategoryDto,
 } from "@/types/api";
@@ -39,6 +40,7 @@ interface DetailsSectionProps {
     FileImageDto,
     unknown
   >;
+  deleteMutation: UseMutationResult<void, Error, DeleteCategoryDto, unknown>;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -60,18 +62,20 @@ const fileSchema = z
 
 const formSchema = z.object({
   id: z.number(),
-  name: z.string().min(10).max(200).trim(),
-  description: z.string().max(255).trim(),
+  name: z.string().min(1).max(200).trim(),
+  description: z.string().min(1).max(255).trim(),
 });
 
 export const DetailsSection: FC<DetailsSectionProps> = ({
   category,
   updateCategoryMutation,
   updateThumbnailMutation,
+  deleteMutation,
 }) => {
   const [showUpdateThumbnailConfirm, setShowUpdateThumbnailConfirm] =
     useState(false);
   const [showUpdateConfirm, setShowUpdateConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const updateImg = useRef<File>(null);
   const [isEditable, setIsEditable] = useState(false);
   const initialValues = useMemo(
@@ -132,6 +136,17 @@ export const DetailsSection: FC<DetailsSectionProps> = ({
     }
   };
 
+  const onDelete = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const onDeleteConfirm = () => {
+    deleteMutation.mutate({
+      id: category.id,
+    });
+    setShowDeleteConfirm(false);
+  };
+
   useEffect(() => {
     if (!isEditable) {
       form.reset(initialValues);
@@ -144,7 +159,15 @@ export const DetailsSection: FC<DetailsSectionProps> = ({
       <h1 className="text-3xl font-bold mb-10 mt-4">Add new category</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={onDelete}
+              className="text-md"
+            >
+              Delete
+            </Button>
             <Button type="submit" className="text-md">
               {isEditable ? "Confirm" : "Change"}
             </Button>
@@ -238,6 +261,11 @@ export const DetailsSection: FC<DetailsSectionProps> = ({
         showConfirmDialog={showUpdateThumbnailConfirm}
         setShowConfirmDialog={setShowUpdateThumbnailConfirm}
         handleConfirm={onUpdateThumbnailConfirm}
+      />
+      <ConfirmDialog
+        showConfirmDialog={showDeleteConfirm}
+        setShowConfirmDialog={setShowDeleteConfirm}
+        handleConfirm={onDeleteConfirm}
       />
     </div>
   );

@@ -22,31 +22,31 @@ const columns: ColumnDef<ProductCardInAdminDto>[] = [
     cell: () => <></>,
     maxSize: 0,
   },
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="ml-2"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="ml-2"
-      />
-    ),
-    size: 5,
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //       className="ml-2"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //       className="ml-2"
+  //     />
+  //   ),
+  //   size: 5,
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "thumbnailImg",
     header: () => <></>,
@@ -67,7 +67,6 @@ const columns: ColumnDef<ProductCardInAdminDto>[] = [
     accessorKey: "name",
     header: "Product",
     cell: ({ row }) => {
-      console.log(row.getValue("id"));
       return (
         <div className="flex items-center gap-2">
           <Link
@@ -179,9 +178,17 @@ export const AdminProductsPage = () => {
           placeholder="Search by name..."
           className="w-80"
           onChange={(e) => setName(e.target.value)}
+          value={name}
         />
         <Button onClick={handleNameChange}>Search</Button>
-        <Button onClick={() => setFilter(defaultFilter)}>Reset</Button>
+        <Button
+          onClick={() => {
+            setFilter(defaultFilter);
+            setName("");
+          }}
+        >
+          Reset
+        </Button>
         <div className="flex-1"></div>
         {table.getSelectedRowModel().rows.length > 0 && (
           <Button onClick={printSelectedIds} className="bg-red-600">

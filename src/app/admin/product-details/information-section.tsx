@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -24,10 +24,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCategories } from "@/features/category/api/get-categories";
 import ReturnIcon from "@/components/ui/return-icon";
-import { ProductDetailsDto, UpdateDetailsProductDto } from "@/types/api";
+import {
+  DeleteProductDto,
+  ProductDetailsDto,
+  UpdateDetailsProductDto,
+} from "@/types/api";
 import _ from "lodash";
 import { UseMutationResult } from "@tanstack/react-query";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { deleteProduct } from "@/features/product/api/delete-product";
 
 interface InformationSectionProps {
   product: ProductDetailsDto;
@@ -37,23 +42,26 @@ interface InformationSectionProps {
     UpdateDetailsProductDto,
     unknown
   >;
+  deleteMutation: UseMutationResult<void, Error, DeleteProductDto, unknown>;
 }
 
 const formSchema = z.object({
   id: z.number(),
-  name: z.string().min(10).max(200).trim(),
+  name: z.string().min(1).max(200).trim(),
   price: z.number().min(1),
-  description: z.string().min(10).max(255).trim(),
+  description: z.string().min(1).max(255).trim(),
   isFeatured: z.boolean(),
   categoryId: z.number(),
-  quantity: z.number().min(1),
+  quantity: z.number().min(0),
 });
 
 export const InformationSection: FC<InformationSectionProps> = ({
   product,
   updateProductMutation,
+  deleteMutation,
 }) => {
   const [showUpdateConfirm, setShowUpdateConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const initialValues = useMemo(
     () => ({
@@ -72,7 +80,7 @@ export const InformationSection: FC<InformationSectionProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...initialValues,
-    }
+    },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -86,6 +94,15 @@ export const InformationSection: FC<InformationSectionProps> = ({
       setIsEditable(true);
     }
   };
+
+  const onDelete = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const onDeleteConfirm = () => {
+    deleteMutation.mutate({ id: product.id });
+    setShowDeleteConfirm(false);
+  }
 
   const onUpdateConfirm = () => {
     updateProductMutation.mutate(form.getValues() as UpdateDetailsProductDto);
@@ -102,7 +119,10 @@ export const InformationSection: FC<InformationSectionProps> = ({
       <h1 className="text-3xl font-bold mb-10 mt-4">Product Information</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="destructive" onClick={onDelete}>
+              Delete
+            </Button>
             <Button type="submit" className="text-md">
               {isEditable ? "Confirm" : "Change"}
             </Button>
@@ -204,7 +224,9 @@ export const InformationSection: FC<InformationSectionProps> = ({
                         placeholder="1"
                         {...field}
                         onChange={(e) => {
-                          const value = e.target.value ? Math.max(1, Number(e.target.value)) : 1
+                          const value = e.target.value
+                            ? Math.max(1, Number(e.target.value))
+                            : 1;
                           field.onChange(value);
                         }}
                         disabled={!isEditable}
@@ -257,7 +279,9 @@ export const InformationSection: FC<InformationSectionProps> = ({
                         placeholder="1"
                         {...field}
                         onChange={(e) => {
-                          const value = e.target.value ? Math.max(1, Number(e.target.value)) : 1
+                          const value = e.target.value
+                            ? Math.max(1, Number(e.target.value))
+                            : 1;
                           field.onChange(value);
                         }}
                         disabled={!isEditable}
@@ -276,6 +300,11 @@ export const InformationSection: FC<InformationSectionProps> = ({
         showConfirmDialog={showUpdateConfirm}
         setShowConfirmDialog={setShowUpdateConfirm}
         handleConfirm={onUpdateConfirm}
+      />
+      <ConfirmDialog
+        showConfirmDialog={showDeleteConfirm}
+        setShowConfirmDialog={setShowDeleteConfirm}
+        handleConfirm={onDeleteConfirm}
       />
     </div>
   );

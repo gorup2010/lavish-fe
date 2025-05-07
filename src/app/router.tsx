@@ -14,6 +14,7 @@ import { AdminUsersPage } from "./admin/users";
 import { AdminCategoriesPage } from "./admin/categories";
 import { AdminProductDetails } from "./admin/product-details";
 import { AdminCategoryDetails } from "./admin/category-details";
+import { AdminUserDetails } from "./admin/user-details";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
         path: "users",
         element: <AdminUsersPage />,
       },
+      {
+        path: "users/:id",
+        element: <AdminUserDetails />,
+      }
     ],
   },
 ]);

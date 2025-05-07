@@ -27,8 +27,8 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const formSchema = z.object({
-  name: z.string().min(10).max(200).trim(),
-  description: z.string().min(10).max(255).trim(),
+  name: z.string().min(1).max(200).trim(),
+  description: z.string().min(1).max(255).trim(),
   thumbnailImg: z
     .instanceof(File, { message: "Thumbnail image is required." })
     .refine((file) => file.size <= MAX_FILE_SIZE, {

@@ -108,6 +108,14 @@ export type DeleteImageDto = {
   imageId: number;
 }
 
+export type DeleteProductDto = {
+  id: number;
+}
+
+export type DeleteCategoryDto = {
+  id: number;
+}
+
 export type CategoryDetailsDto = {
   id: number;
   name: string;
@@ -125,6 +133,20 @@ export type CreateRatingDto = {
   productId: number;
   star: number;
   comment: string;
+}
+
+export type UserDetailsDto = {
+  id: number,
+  username: string,
+  firstname: string,
+  lastname: string,
+  isActive: boolean,
+  roles: string[],
+}
+
+export type UpdateUserStatusDto = {
+  id: number;
+  isActive: boolean;
 }
 
 // TODO: Actually send {page, size, ...filter} not just only filter

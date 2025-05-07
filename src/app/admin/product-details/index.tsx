@@ -10,6 +10,7 @@ import { useUpdateProduct } from "@/features/product/api/update-product";
 import { useAddImage } from "@/features/product/api/add-image";
 import { useUpdateThumbnail } from "@/features/product/api/update-thumbnail";
 import { useDeleteImage } from "@/features/product/api/delete-image";
+import { useDeleteProduct } from "@/features/product/api/delete-product";
 
 export const AdminProductDetails: FC = () => {
   const { id } = useParams();
@@ -18,12 +19,14 @@ export const AdminProductDetails: FC = () => {
   const addImageMutation = useAddImage();
   const deleteImageMutation = useDeleteImage();
   const updateThumbnailMutation = useUpdateThumbnail();
+  const deleteProductMutation = useDeleteProduct();
 
   const isPending =
     updateProductMutation.isPending ||
     addImageMutation.isPending ||
     deleteImageMutation.isPending ||
-    updateThumbnailMutation.isPending;
+    updateThumbnailMutation.isPending ||
+    deleteProductMutation.isPending;
 
   if (productQuery.isLoading) return <LoadingBlock />;
 
@@ -50,6 +53,7 @@ export const AdminProductDetails: FC = () => {
       <InformationSection
         product={productQuery.data}
         updateProductMutation={updateProductMutation}
+        deleteMutation={deleteProductMutation}
       />
       <ImageSection
         product={productQuery.data}

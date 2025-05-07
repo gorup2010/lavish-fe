@@ -7,15 +7,19 @@ import { Loader2 } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { DetailsSection } from "./details-section";
 import { FC } from "react";
+import { useDeleteCategory } from "@/features/category/api/delete-category";
 
 export const AdminCategoryDetails: FC = () => {
   const { id } = useParams();
   const categoryQuery = useCategory({ id });
   const updateCategoryMutation = useUpdateCategory();
   const updateThumbnailMutation = useUpdateThumbnail();
+  const deleteCategoryMutation = useDeleteCategory();
 
   const isPending =
-    updateCategoryMutation.isPending || updateThumbnailMutation.isPending;
+    updateCategoryMutation.isPending ||
+    updateThumbnailMutation.isPending ||
+    deleteCategoryMutation.isPending;
 
   if (categoryQuery.isLoading) return <LoadingBlock />;
 
@@ -43,6 +47,7 @@ export const AdminCategoryDetails: FC = () => {
         category={categoryQuery.data}
         updateCategoryMutation={updateCategoryMutation}
         updateThumbnailMutation={updateThumbnailMutation}
+        deleteMutation={deleteCategoryMutation}
       />
     </div>
   );
