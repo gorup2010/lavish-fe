@@ -13,7 +13,7 @@ export const useLogin = () => {
       return response;
     },
     onError: (error) => {
-      console.log("Error in useLogin " + error);
+      console.log(error);
     },
     onSuccess: (response) => {
       authContext.setAuth(response);

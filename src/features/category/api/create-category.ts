@@ -22,6 +22,7 @@ export const useCreateCategory = ({ mutationConfig }: Options = {}) => {
     },
     ...restConfig,
     onSuccess: (...args) => {
+      toast.success("Category created successfully");
       onSuccess?.(...args);
     },
   });

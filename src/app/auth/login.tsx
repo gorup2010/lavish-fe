@@ -29,10 +29,15 @@ export default function LoginPage({
     },
   });
 
-  const { login, isPending, isError, errorMessage } = useLogin();
+  const { login, isPending, isError, error } = useLogin();
   const onSubmit = (values: z.infer<typeof loginInputSchema>) => {
     login(values);
   };
+
+  const errorMessage =
+    error && error.response?.status === 401
+      ? "Invalid email or password"
+      : "Something went wrong";
 
   return (
     <Form {...form}>
@@ -86,7 +91,7 @@ export default function LoginPage({
             {isPending && <Loader2 className="animate-spin" />}
             Log in
           </Button>
-          <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+          {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
             <span className="bg-background text-muted-foreground relative z-10 px-2">
               Or log in with
             </span>
@@ -99,7 +104,7 @@ export default function LoginPage({
               />
             </svg>
             <span className="sr-only">Log in with Google</span>
-          </Button>
+          </Button> */}
         </div>
         <div className="text-center text-sm">
           Don&apos;t have an account?{" "}

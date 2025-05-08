@@ -70,7 +70,7 @@ export const InformationSection: FC<InformationSectionProps> = ({
       price: product.price,
       description: product.description,
       isFeatured: product.isFeatured,
-      categoryId: product.categories[0].id,
+      categoryId: product.categories.length > 0 ? product.categories[0].id : 0,
       quantity: product.quantity,
     }),
     [product]
@@ -274,14 +274,14 @@ export const InformationSection: FC<InformationSectionProps> = ({
                     <FormControl>
                       <Input
                         type="number"
-                        min="1"
+                        min="0"
                         step="1"
                         placeholder="1"
                         {...field}
                         onChange={(e) => {
                           const value = e.target.value
-                            ? Math.max(1, Number(e.target.value))
-                            : 1;
+                            ? Math.max(0, Number(e.target.value))
+                            : 0;
                           field.onChange(value);
                         }}
                         disabled={!isEditable}

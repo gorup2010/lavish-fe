@@ -13,6 +13,7 @@ import StarRating from "@/components/ui/star-rating";
 import { useProduct } from "@/features/product/api/get-product";
 import { RatingSection } from "@/features/rating/components/rating-section";
 import { formatVND } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -121,6 +122,18 @@ function ProductInformationPage() {
           </div>
           <div className="flex-1">
             <div className="text-5xl font-bold mb-4">{product.name}</div>
+            <Badge
+              variant={product.quantity > 0 ? "secondary" : "destructive"}
+              className="text-base px-4 py-1"
+            >
+              {product.quantity > 0 ? "In Stock" : "Out of Stock"}
+            </Badge>
+            {product.categories.length != 0 && (
+              <Badge variant="default" className="text-base px-4 py-1 mx-4">
+                {product.categories[0].name}
+              </Badge>
+            )}
+
             <div className="text-2xl font-medium mt-2">
               {formatVND(product.price)}
             </div>
