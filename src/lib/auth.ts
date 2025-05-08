@@ -21,8 +21,8 @@ export const test = () => {
 
 // TODO: test only. nhớ fix lại email thành z.string.email
 export const loginInputSchema = z.object({
-  //email: z.string().email({ message: "Invalid email address." }),
-  email: z.string(),
+  email: z.string().email({ message: "Invalid email address." }),
+  //email: z.string(),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters long")
@@ -39,17 +39,17 @@ export const loginWithEmailAndPassword = (
 
 export const registerInputSchema = z
   .object({
-    //username: z.string().email("Invalid email address").trim(),
-    email: z.string(),
+    email: z.string().email("Invalid email address").trim(),
+    //email: z.string(),
     firstname: z
       .string()
       .min(1, "")
-      .regex(/^[A-Za-z]*$/, "First name can only contain letters.")
+      .regex(/^[A-Za-z\s]*$/, "First name can only contain letters.")
       .trim(),
     lastname: z
       .string()
       .min(1, "")
-      .regex(/^[A-Za-z]*$/, "Last name can only contain letters.")
+      .regex(/^[A-Za-z\s]*$/, "Last name can only contain letters.")
       .trim(),
     password: z
       .string()

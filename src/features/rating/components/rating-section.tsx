@@ -12,6 +12,8 @@ import { useInfiniteRatings } from "../api/get-ratings";
 import { LoadingBlock } from "@/components/loading/loading-block";
 import { RequestFail } from "@/components/error/error-message";
 import StarRating from "@/components/ui/star-rating";
+import { useCreateRating } from "../api/create-rating";
+import { useAuth } from "@/providers/AuthProvider";
 
 const COMMENT_PREVIEW_LIMIT = 150;
 
@@ -19,13 +21,23 @@ interface RatingSectionProps {
   productId: number;
 }
 
-export const RatingSection : FC<RatingSectionProps> = ({ productId }) => {
+export const RatingSection: FC<RatingSectionProps> = ({ productId }) => {
   const [comment, setComment] = useState("");
+  const [rating, setRating] = useState(0);
+  const [error, setError] = useState(true);
   const [expandedComments, setExpandedComments] = useState<number[]>([]);
+  const createRatingMutation = useCreateRating();
+  const { auth } = useAuth();
 
   const handleSubmitComment = () => {
-    console.log("Submitting comment:", comment);
+    if (rating === 0) {
+      setError(true);
+      return;
+    }
+    createRatingMutation.mutate({ productId, star: rating, comment });
     setComment("");
+    setRating(0);
+    setError(false);
   };
 
   const toggleComment = (id: number) => {
@@ -57,31 +69,36 @@ export const RatingSection : FC<RatingSectionProps> = ({ productId }) => {
       <h2 className="text-2xl font-bold mb-6">Ratings from customers</h2>
 
       {/* New comment section */}
-      <Card className="mb-8">
-        <CardHeader>
-          <h3 className="text-lg font-semibold">Write a review</h3>
-        </CardHeader>
-        <CardContent>
-          <Textarea
-            placeholder="Share your experience..."
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            className="min-h-[100px]"
-          />
-          {/* Star rating container - for custom component */}
-          <div className="flex items-center justify-end mt-2">
-            <div className="star-rating-container">
-              {/* User will insert their custom star rating component here */}
-              <span className="text-sm text-muted-foreground">
-                Your star rating component goes here
-              </span>
+      {auth?.username && (
+        <Card className="mb-8">
+          <CardHeader>
+            <h3 className="text-lg font-semibold">Write a review</h3>
+          </CardHeader>
+          <CardContent>
+            <Textarea
+              placeholder="Share your experience..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="min-h-[100px]"
+            />
+            {/* Star rating container - for custom component */}
+            <div className="flex flex-col items-end justify-end mt-2">
+              <div className="star-rating-container">
+                {/* User will insert their custom star rating component here */}
+                <StarRating
+                  readOnly={false}
+                  onChange={setRating}
+                  value={rating}
+                />
+              </div>
+              {error && <div className="text-sm text-red-500">Please select a rating</div>}
             </div>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button onClick={handleSubmitComment}>Submit Review</Button>
-        </CardFooter>
-      </Card>
+          </CardContent>
+          <CardFooter>
+            <Button onClick={handleSubmitComment}>Submit Review</Button>
+          </CardFooter>
+        </Card>
+      )}
 
       {/* Ratings list */}
       <div className="space-y-4">
@@ -149,4 +166,4 @@ export const RatingSection : FC<RatingSectionProps> = ({ productId }) => {
       </div>
     </div>
   );
-}
+};

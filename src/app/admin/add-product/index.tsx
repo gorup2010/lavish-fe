@@ -22,12 +22,13 @@ import {
 import * as z from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CircleX, CloudUpload } from "lucide-react";
+import { CircleX, CloudUpload, Loader2 } from "lucide-react";
 import { useCategories } from "@/features/category/api/get-categories";
 import { LoadingBlock } from "@/components/loading/loading-block";
 import { RequestFail } from "@/components/error/error-message";
 import ReturnIcon from "@/components/ui/return-icon";
 import { useCreateProduct } from "@/features/product/api/create-product";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -38,9 +39,9 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const formSchema = z.object({
-  name: z.string().min(10).max(200).trim(),
+  name: z.string().min(1).max(200).trim(),
   price: z.number().min(1),
-  description: z.string().min(10).max(255).trim(),
+  description: z.string().min(1).max(255).trim(),
   thumbnailImg: z
     .instanceof(File, { message: "Thumbnail image is required." })
     .refine((file) => file.size <= MAX_FILE_SIZE, {
@@ -76,11 +77,12 @@ const defaultValues = {
   thumbnailImg: undefined,
   isFeatured: false,
   categoryId: undefined,
-  quantity: 0,
+  quantity: 1,
   images: [],
 };
 
 export const AddProductPage: FC = () => {
+  const [showConfirm, setShowConfirm] = useState(false);
   const [imagesCount, setImagesCount] = useState(0);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -88,9 +90,21 @@ export const AddProductPage: FC = () => {
       ...defaultValues,
     },
   });
-  const createProductMutation = useCreateProduct();
+  const createProductMutation = useCreateProduct({
+    mutationConfig: {
+      onSuccess: () => {
+        form.reset();
+        setImagesCount(0);
+      },
+    },
+  });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    setShowConfirm(true);
+  };
+
+  const onConfirm = () => {
+    const data = form.getValues();
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("price", data.price.toString());
@@ -101,7 +115,8 @@ export const AddProductPage: FC = () => {
     formData.append("thumbnailImg", data.thumbnailImg);
     data.images?.forEach((image) => formData.append("images", image));
     createProductMutation.mutate(formData);
-  };
+    setShowConfirm(false);
+  }
 
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -147,7 +162,15 @@ export const AddProductPage: FC = () => {
   if (!categories || categories.length === 0) return <div>No data</div>;
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="relative container mx-auto py-6">
+      {createProductMutation.isPending && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      )}
       <ReturnIcon />
       <h1 className="text-3xl font-bold mb-10 mt-4">Add new product</h1>
       <Form {...form}>
@@ -247,11 +270,10 @@ export const AddProductPage: FC = () => {
                         step="1"
                         placeholder="1"
                         {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined
-                          )
-                        }
+                        onChange={(e) => {
+                          const value = e.target.value ? Math.max(1, Number(e.target.value)) : 1
+                          field.onChange(value);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -299,11 +321,10 @@ export const AddProductPage: FC = () => {
                         step="1"
                         placeholder="1"
                         {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined
-                          )
-                        }
+                        onChange={(e) => {
+                          const value = e.target.value ? Math.max(1, Number(e.target.value)) : 1
+                          field.onChange(value);
+                        }}
                       />
                     </FormControl>
                     <FormMessage />
@@ -400,6 +421,14 @@ export const AddProductPage: FC = () => {
           </div>
         </form>
       </Form>
+
+      {showConfirm && (
+        <ConfirmDialog
+          showConfirmDialog={showConfirm}
+          setShowConfirmDialog={setShowConfirm}
+          handleConfirm={onConfirm}
+        />
+      )}
     </div>
   );
 };

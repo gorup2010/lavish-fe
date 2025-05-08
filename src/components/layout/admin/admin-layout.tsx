@@ -6,9 +6,9 @@ import AdminSidebar from "./admin-sidebar";
 const AdminLayout: FC = memo(() => {
   const { auth } = useAuth();
 
-//   if (auth === undefined || auth.roles.includes("ADMIN") === false) {
-//       return <Navigate to={"/login"} replace />;
-//   }
+  if (auth === undefined || auth.roles.includes("ADMIN") === false) {
+      return <Navigate to={"/login"} replace />;
+  }
 
   return (
     <Fragment>

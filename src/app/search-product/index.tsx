@@ -5,10 +5,21 @@ import qs from "qs";
 
 export default function SearchProductPage() {
   const location = useLocation();
-  const filter = qs.parse(location.search.slice(1));
-  if (filter.categoryIds && !Array.isArray(filter.categoryIds)) {
-    filter.categoryIds = [filter.categoryIds];
-  }
+  const parseParams = qs.parse(location.search.slice(1));
+  const filter = {
+    name: parseParams.name?.toString(),
+    minPrice: parseParams.minPrice
+      ? Number.parseInt(parseParams.minPrice.toString())
+      : undefined,
+    maxPrice: parseParams.maxPrice
+      ? Number.parseInt(parseParams.maxPrice.toString())
+      : undefined,
+    sortBy: parseParams.sortBy?.toString() || "createdOn",
+    sortOrder: parseParams.sortOrder?.toString() || "desc",
+    categoryIds: parseParams.categoryIds
+      ? parseParams.categoryIds.toString().split(",").map(Number)
+      : [],
+  };
 
   return (
     <div className="min-h-svh py-20">
@@ -20,16 +31,12 @@ export default function SearchProductPage() {
         {/* Filter section */}
         <ProductFilterSection
           filter={{
-            sortBy: "createdOn",
-            sortOrder: "desc",
             ...filter,
           }}
         />
 
         <ProductCardList
           filter={{
-            sortBy: "createdOn",
-            sortOrder: "desc",
             ...filter,
           }}
         />

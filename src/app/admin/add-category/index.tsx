@@ -5,28 +5,18 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import * as z from "zod";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { CircleX, CloudUpload } from "lucide-react";
-import { useCategories } from "@/features/category/api/get-categories";
-import { LoadingBlock } from "@/components/loading/loading-block";
-import { RequestFail } from "@/components/error/error-message";
+import { CircleX, CloudUpload, Loader2 } from "lucide-react";
 import ReturnIcon from "@/components/ui/return-icon";
+import { useCreateCategory } from "@/features/category/api/create-category";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -37,8 +27,8 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const formSchema = z.object({
-  name: z.string().min(10).max(200).trim(),
-  description: z.string().max(255).trim(),
+  name: z.string().min(1).max(200).trim(),
+  description: z.string().min(1).max(255).trim(),
   thumbnailImg: z
     .instanceof(File, { message: "Thumbnail image is required." })
     .refine((file) => file.size <= MAX_FILE_SIZE, {
@@ -57,17 +47,36 @@ const defaultValues = {
 };
 
 export const AddCategoryPage: FC = () => {
+  const [showConfirm, setShowConfirm] = useState(false);
   const [imagesCount, setImagesCount] = useState(0);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       ...defaultValues,
     },
   });
+  const createCategoryMutation = useCreateCategory({
+    mutationConfig: {
+      onSuccess: () => {
+        form.reset();
+      },
+    },
+  });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    setShowConfirm(true);
   };
+
+  const onConfirm = () => {
+    const data = form.getValues();
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("thumbnailImg", data.thumbnailImg);
+    createCategoryMutation.mutate(formData);
+    setShowConfirm(false);
+  }
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -83,7 +92,15 @@ export const AddCategoryPage: FC = () => {
   };
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="relative container mx-auto py-6">
+      {createCategoryMutation.isPending && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      )}
       <ReturnIcon />
       <h1 className="text-3xl font-bold mb-10 mt-4">Add new category</h1>
       <Form {...form}>
@@ -103,7 +120,7 @@ export const AddCategoryPage: FC = () => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Product name" {...field} />
+                      <Input placeholder="Category name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,7 +138,7 @@ export const AddCategoryPage: FC = () => {
                     <FormLabel className="h-fit">Description</FormLabel>
                     <FormControl className="flex-grow">
                       <Textarea
-                        placeholder="Product description"
+                        placeholder="Category description"
                         className="max-h-[200px] resize-none"
                         {...field}
                       />
@@ -131,7 +148,7 @@ export const AddCategoryPage: FC = () => {
                 )}
               />
             </div>
-            
+
             {/* Thumbnail Field */}
             <div className="row-span-4 col-start-2 row-start-1">
               <FormField
@@ -150,7 +167,7 @@ export const AddCategoryPage: FC = () => {
                           />
                           <CircleX
                             className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 fill-red-500 text-white"
-                            onClick={() => handleRemoveImage(true, 0)}
+                            onClick={handleRemoveImage}
                           />
                         </div>
                       ) : (
@@ -161,7 +178,7 @@ export const AddCategoryPage: FC = () => {
                             accept="image/*"
                             className="hidden"
                             multiple
-                            onChange={(e) => handleImageChange(e, true)}
+                            onChange={handleImageChange}
                           />
                         </label>
                       )}
@@ -174,6 +191,14 @@ export const AddCategoryPage: FC = () => {
           </div>
         </form>
       </Form>
+
+      {showConfirm && (
+        <ConfirmDialog
+          showConfirmDialog={showConfirm}
+          setShowConfirmDialog={setShowConfirm}
+          handleConfirm={onConfirm}
+        />
+      )}
     </div>
   );
 };

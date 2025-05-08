@@ -17,30 +17,36 @@ import { Link } from "react-router-dom";
 
 const columns: ColumnDef<ProductCardInAdminDto>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="ml-2"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="ml-2"
-      />
-    ),
-    size: 5,
-    enableSorting: false,
-    enableHiding: false,
+    accessorKey: "id",
+    header: () => <></>,
+    cell: () => <></>,
+    maxSize: 0,
   },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //       className="ml-2"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //       className="ml-2"
+  //     />
+  //   ),
+  //   size: 5,
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "thumbnailImg",
     header: () => <></>,
@@ -63,7 +69,12 @@ const columns: ColumnDef<ProductCardInAdminDto>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-2">
-          <Link to="#" className="font-medium hover:text-gray-500">{row.getValue("name")}</Link>
+          <Link
+            to={`${row.getValue("id")}`}
+            className="font-medium hover:text-gray-500"
+          >
+            {row.getValue("name")}
+          </Link>
         </div>
       );
     },
@@ -167,16 +178,26 @@ export const AdminProductsPage = () => {
           placeholder="Search by name..."
           className="w-80"
           onChange={(e) => setName(e.target.value)}
+          value={name}
         />
         <Button onClick={handleNameChange}>Search</Button>
-        <Button onClick={() => setFilter(defaultFilter)}>Reset</Button>
+        <Button
+          onClick={() => {
+            setFilter(defaultFilter);
+            setName("");
+          }}
+        >
+          Reset
+        </Button>
         <div className="flex-1"></div>
         {table.getSelectedRowModel().rows.length > 0 && (
           <Button onClick={printSelectedIds} className="bg-red-600">
             Delete ({table.getSelectedRowModel().rows.length})
           </Button>
         )}
-        <Button className="self-end">Add Product</Button>
+        <Button className="self-end">
+          <Link to="new">Add Product</Link>
+        </Button>
       </div>
 
       <DataTable

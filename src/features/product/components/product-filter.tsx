@@ -22,8 +22,8 @@ import { ProductFilter } from "@/types/api";
 import { useCategories } from "@/features/category/api/get-categories";
 import { LoadingBlock } from "@/components/loading/loading-block";
 import { RequestFail } from "@/components/error/error-message";
-import { FC, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import qs from "qs";
 
 // Remove the isFeatured field from the schema
@@ -50,21 +50,20 @@ const formSchema = z
     }
   );
 
-const defaultFilter = {
-  name: "",
-  minPrice: undefined,
-  maxPrice: undefined,
-  sortBy: "createdOn",
-  sortOrder: "desc",
-  categoryIds: [],
-};
-
 interface ProductFilterSectionProps {
   filter: ProductFilter;
 }
 
 const ProductFilterSection: FC<ProductFilterSectionProps> = ({ filter }) => {
   const navigate = useNavigate();
+  const defaultFilter = {
+    name: "",
+    minPrice: undefined,
+    maxPrice: undefined,
+    sortBy: "createdOn",
+    sortOrder: "desc",
+    categoryIds: [],
+  };
   // Update the defaultValues to remove isFeatured
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -280,10 +279,17 @@ const ProductFilterSection: FC<ProductFilterSectionProps> = ({ filter }) => {
           </div>
 
           <div className="flex justify-end gap-1.5">
-            <Button type="reset" variant="outline" onClick={() => form.reset()}>
+            <Button
+              type="reset"
+              variant="outline"
+              onClick={() => form.reset(defaultFilter)}
+            >
               Reset
             </Button>
             <Button type="submit">Apply Filters</Button>
+            {/* <Button type="button" onClick={() => console.log(form.getValues())}>
+              Clear Filters
+            </Button> */}
           </div>
         </form>
       </Form>
