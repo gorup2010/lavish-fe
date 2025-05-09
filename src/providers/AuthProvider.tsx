@@ -101,7 +101,7 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     return () => {
       api.interceptors.response.eject(refreshInterceptor);
     };
-  });
+  }, []);
 
   const contextValue = useMemo(
     () => ({

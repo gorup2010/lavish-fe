@@ -22,16 +22,17 @@ import { ProductFilter } from "@/types/api";
 import { useCategories } from "@/features/category/api/get-categories";
 import { LoadingBlock } from "@/components/loading/loading-block";
 import { RequestFail } from "@/components/error/error-message";
-import { FC, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { FC, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import qs from "qs";
+import { MAX_PRICE } from "@/lib/constant";
 
 // Remove the isFeatured field from the schema
 const formSchema = z
   .object({
     name: z.string().trim().optional(),
-    minPrice: z.number().min(0).optional(),
-    maxPrice: z.number().min(0).optional(),
+    minPrice: z.number().min(0).max(MAX_PRICE - 1).optional(),
+    maxPrice: z.number().min(0).max(MAX_PRICE).optional(),
     sortBy: z.string().optional(),
     sortOrder: z.string().optional(),
     categoryIds: z.array(z.number()).optional(),

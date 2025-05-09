@@ -34,10 +34,14 @@ export default function LoginPage({
     login(values);
   };
 
-  const errorMessage =
-    error && error.response?.status === 401
-      ? "Invalid email or password"
-      : "Something went wrong";
+  let errorMessage = "Something went wrong";
+
+  if (error?.response?.status === 401) {
+    errorMessage =
+      error?.response?.data?.message === "Bad credentials"
+        ? "Invalid email or password"
+        : error?.response?.data?.message;
+  }
 
   return (
     <Form {...form}>

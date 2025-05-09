@@ -1,5 +1,6 @@
 import { RequestFail } from "@/components/error/error-message";
 import { LoadingBlock } from "@/components/loading/loading-block";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
@@ -57,6 +58,13 @@ const columns: ColumnDef<UserInAdminDto>[] = [
           {row.getValue("lastname")}
         </div>
       );
+    },
+  },
+  {
+    accessorKey: "isActive",
+    header: "Status",
+    cell: ({ row }) => {
+      return <Badge variant={row.getValue("isActive") ? "default" : "destructive"}>{row.getValue("isActive") ? "Active" : "Inactive"}</Badge>;
     },
   },
   {

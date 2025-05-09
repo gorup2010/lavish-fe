@@ -148,10 +148,8 @@ export const DetailsSection: FC<DetailsSectionProps> = ({
   };
 
   useEffect(() => {
-    if (!isEditable) {
       form.reset(initialValues);
-    }
-  }, [isEditable, form, initialValues]);
+  }, [form, initialValues]);
 
   return (
     <div className="container mx-auto py-6">

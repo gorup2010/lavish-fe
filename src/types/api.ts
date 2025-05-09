@@ -39,6 +39,7 @@ export type UserInAdminDto = {
   username: string;
   firstname: string;
   lastname: string;
+  isActive: boolean;
   createdOn: string;
 }
 
@@ -72,6 +73,7 @@ export type RatingDto = {
     id: number;
     firstname: string;
     lastname: string;
+    username: string;
   }
 }
 
@@ -106,6 +108,11 @@ export type FileImageDto = {
 export type DeleteImageDto = {
   productId: number;
   imageId: number;
+}
+
+export type DeleteCommentDto = {
+  productId: number;
+  commentId: number;
 }
 
 export type DeleteProductDto = {

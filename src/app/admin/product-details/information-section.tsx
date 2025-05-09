@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ import {
 import _ from "lodash";
 import { UseMutationResult } from "@tanstack/react-query";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { deleteProduct } from "@/features/product/api/delete-product";
+import { MAX_PRICE, MAX_QUANTITY } from "@/lib/constant";
 
 interface InformationSectionProps {
   product: ProductDetailsDto;
@@ -48,11 +48,11 @@ interface InformationSectionProps {
 const formSchema = z.object({
   id: z.number(),
   name: z.string().min(1).max(200).trim(),
-  price: z.number().min(1),
+  price: z.number().min(1).max(MAX_PRICE),
   description: z.string().min(1).max(255).trim(),
   isFeatured: z.boolean(),
   categoryId: z.number(),
-  quantity: z.number().min(0),
+  quantity: z.number().min(0).max(MAX_QUANTITY),
 });
 
 export const InformationSection: FC<InformationSectionProps> = ({
@@ -102,7 +102,7 @@ export const InformationSection: FC<InformationSectionProps> = ({
   const onDeleteConfirm = () => {
     deleteMutation.mutate({ id: product.id });
     setShowDeleteConfirm(false);
-  }
+  };
 
   const onUpdateConfirm = () => {
     updateProductMutation.mutate(form.getValues() as UpdateDetailsProductDto);
@@ -112,6 +112,12 @@ export const InformationSection: FC<InformationSectionProps> = ({
 
   const categoriesQuery = useCategories({});
   const categories = categoriesQuery.data ?? product.categories;
+
+  console.log(initialValues);
+
+  useEffect(() => {
+    form.reset(initialValues);
+  }, [form, initialValues]);
 
   return (
     <div className="container mx-auto py-6">

@@ -24,6 +24,7 @@ export const getProducts = ({
   page?: number;
   size?: number;
 }): Promise<PaginationResponse<ProductCardDto>> => {
+  console.log(filter);
   return api.get(`${import.meta.env.VITE_BASE_URL}/products`, {
     params: {
       page,

@@ -29,6 +29,7 @@ import { RequestFail } from "@/components/error/error-message";
 import ReturnIcon from "@/components/ui/return-icon";
 import { useCreateProduct } from "@/features/product/api/create-product";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { MAX_PRICE, MAX_QUANTITY } from "@/lib/constant";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -40,7 +41,7 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const formSchema = z.object({
   name: z.string().min(1).max(200).trim(),
-  price: z.number().min(1),
+  price: z.number().min(1).max(MAX_PRICE),
   description: z.string().min(1).max(255).trim(),
   thumbnailImg: z
     .instanceof(File, { message: "Thumbnail image is required." })
@@ -53,7 +54,7 @@ const formSchema = z.object({
     }),
   isFeatured: z.boolean(),
   categoryId: z.number(),
-  quantity: z.number().min(1),
+  quantity: z.number().min(1).max(MAX_QUANTITY),
   images: z
     .array(
       z

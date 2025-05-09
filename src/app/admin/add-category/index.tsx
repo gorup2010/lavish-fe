@@ -192,13 +192,11 @@ export const AddCategoryPage: FC = () => {
         </form>
       </Form>
 
-      {showConfirm && (
         <ConfirmDialog
           showConfirmDialog={showConfirm}
           setShowConfirmDialog={setShowConfirm}
           handleConfirm={onConfirm}
         />
-      )}
     </div>
   );
 };

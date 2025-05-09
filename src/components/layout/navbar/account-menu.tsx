@@ -10,9 +10,10 @@ import {
 import { useLogout } from "@/hooks/use-logout";
 import { useAuth } from "@/providers/AuthProvider";
 import { Loader2, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function AccountMenu() {
+  const navigate = useNavigate();
   const { logout, isPending } = useLogout();
   const { auth } = useAuth();
 
@@ -27,8 +28,8 @@ export default function AccountMenu() {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         {
           auth?.roles.includes("ADMIN") && (
-            <DropdownMenuItem>
-              <Link to="/admin/users">Admin</Link>
+            <DropdownMenuItem onClick={() => navigate("/admin/users")}>
+              Admin
             </DropdownMenuItem>
           )
         }
@@ -38,8 +39,8 @@ export default function AccountMenu() {
             {isPending && <Loader2 className="animate-spin" />} Log Out
           </DropdownMenuItem>
         ) : (
-          <DropdownMenuItem>
-            <Link to="/login">Log In</Link>
+          <DropdownMenuItem onClick={() => navigate("/admin/users")}>
+            Log In
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

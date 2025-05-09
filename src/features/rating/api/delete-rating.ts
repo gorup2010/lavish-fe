@@ -1,27 +1,28 @@
 import { api } from "@/lib/api-client";
 import { MutationConfig } from "@/lib/react-query";
-import { CreateRatingDto } from "@/types/api";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { DeleteCommentDto } from "@/types/api";
 import { getInfiniteRatingsQueryOptions } from "./get-ratings";
 
 type Options = {
-  mutationConfig?: MutationConfig<typeof createRating>;
+  mutationConfig?: MutationConfig<typeof deleteComment>;
 };
 
-export const createRating = (rating: CreateRatingDto): Promise<void> => {
-  return api.post(`${import.meta.env.VITE_BASE_URL}/ratings`, rating);
+export const deleteComment = (dto: DeleteCommentDto): Promise<void> => {
+    console.log(dto);
+  return api.delete(`${import.meta.env.VITE_BASE_URL}/ratings/${dto.commentId}`);
 };
 
-export const useCreateRating = ({ mutationConfig }: Options = {}) => {
+export const useDeleteComment = ({ mutationConfig }: Options = {}) => {
   const queryClient = useQueryClient();
   const { onSuccess, ...restConfig } = mutationConfig || {};
 
   return useMutation({
-    mutationFn: createRating,
+    mutationFn: deleteComment,
     onError: (error) => {
-      const errorMessage = error.response?.data?.message || error.message;
-      toast.error(errorMessage);
+      toast.error(error.message);
     },
     ...restConfig,
     onSuccess: (...args) => {
@@ -30,6 +31,7 @@ export const useCreateRating = ({ mutationConfig }: Options = {}) => {
           productId: args[1].productId,
         }).queryKey,
       });
+      toast.success("Comment deleted successfully");
       onSuccess?.(...args);
     },
   });

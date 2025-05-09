@@ -160,7 +160,7 @@ export const ImageSection: FC<ImageSectionProps> = ({
         <Label className="mb-4">Images</Label>
         <div className="flex gap-4">
           {product.images?.map((image, index) => (
-            <div key={image.id + index} className="relative group w-1/3">
+            <div key={image.url + index} className="relative group w-1/3">
               <img
                 src={image.url}
                 alt={"img" + index}

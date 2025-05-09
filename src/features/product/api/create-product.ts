@@ -22,6 +22,7 @@ export const useCreateProduct = ({ mutationConfig }: Options = {}) => {
     },
     ...restConfig,
     onSuccess: (...args) => {
+      toast.success("Product created successfully");
       onSuccess?.(...args);
     },
   });

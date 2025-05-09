@@ -13,7 +13,8 @@ interface ProductCardListProps {
 
 const ProductCardList: FC<ProductCardListProps> = ({ filter }) => {
   const productsQuery = useInfiniteProducts({ filter });
-
+  console.log(productsQuery.data);
+  console.log(productsQuery.error);
   if (productsQuery.isLoading) return <LoadingBlock />;
 
   if (productsQuery.isError) return <RequestFail retryRequest={productsQuery.refetch} error={productsQuery.error} />;

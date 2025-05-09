@@ -14,6 +14,8 @@ import { RequestFail } from "@/components/error/error-message";
 import StarRating from "@/components/ui/star-rating";
 import { useCreateRating } from "../api/create-rating";
 import { useAuth } from "@/providers/AuthProvider";
+import { Pencil, Trash2 } from "lucide-react";
+import { useDeleteComment } from "../api/delete-rating";
 
 const COMMENT_PREVIEW_LIMIT = 150;
 
@@ -27,6 +29,7 @@ export const RatingSection: FC<RatingSectionProps> = ({ productId }) => {
   const [error, setError] = useState(true);
   const [expandedComments, setExpandedComments] = useState<number[]>([]);
   const createRatingMutation = useCreateRating();
+  const deleteCommentMutation = useDeleteComment();
   const { auth } = useAuth();
 
   const handleSubmitComment = () => {
@@ -46,6 +49,10 @@ export const RatingSection: FC<RatingSectionProps> = ({ productId }) => {
         ? prev.filter((commentId) => commentId !== id)
         : [...prev, id]
     );
+  };
+
+  const onDelete = (id: number) => {
+    deleteCommentMutation.mutate({ productId, commentId: id });
   };
 
   const ratingQuery = useInfiniteRatings({ productId });
@@ -91,7 +98,11 @@ export const RatingSection: FC<RatingSectionProps> = ({ productId }) => {
                   value={rating}
                 />
               </div>
-              {error && <div className="text-sm text-red-500">Please select a rating</div>}
+              {error && (
+                <div className="text-sm text-red-500">
+                  Please select a rating
+                </div>
+              )}
             </div>
           </CardContent>
           <CardFooter>
@@ -160,6 +171,23 @@ export const RatingSection: FC<RatingSectionProps> = ({ productId }) => {
                   </>
                 )}
               </div>
+
+              {auth?.username === rating.user.username && (
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button variant="outline" size="icon" className="h-8 w-8">
+                    <Pencil className="h-4 w-4" />
+                    <span className="sr-only">Edit review</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Delete review</span>
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
