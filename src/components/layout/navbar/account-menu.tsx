@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/hooks/use-logout";
@@ -26,14 +25,14 @@ export default function AccountMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        {
-          auth?.roles.includes("ADMIN") && (
-            <DropdownMenuItem onClick={() => navigate("/admin/users")}>
-              Admin
-            </DropdownMenuItem>
-          )
-        }
-        <DropdownMenuSeparator />
+        {auth?.roles.includes("ADMIN") && (
+          <DropdownMenuItem onClick={() => navigate("/admin/users")}>
+            Admin
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onClick={() => navigate("/cart")}>
+          Cart
+        </DropdownMenuItem>
         {auth?.username !== undefined ? (
           <DropdownMenuItem disabled={isPending} onClick={() => logout()}>
             {isPending && <Loader2 className="animate-spin" />} Log Out

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import StarRating from "@/components/ui/star-rating";
+import { useAddCart } from "@/features/cart/api/add-cart";
 import { formatVND } from "@/lib/utils";
 import { ProductCardDto } from "@/types/api";
 import { ShoppingBag } from "lucide-react";
@@ -12,6 +13,7 @@ interface ProductCardProps {
 
 const ProductCard: FC<ProductCardProps> = ({ product }) => {
   const { id, name, price, rating, thumbnailImg } = product;
+  const addCartMutation = useAddCart();
 
   return (
     <div className="flex flex-col group cursor-pointer w-full">
@@ -24,6 +26,8 @@ const ProductCard: FC<ProductCardProps> = ({ product }) => {
             variant="outline"
             size="sm"
             className="flex items-center gap-2"
+            onClick={() => addCartMutation.mutate({ productId: id, quantity: 1 })}
+            disabled={addCartMutation.isPending}
           >
             <ShoppingBag size={16} />
             Add to cart

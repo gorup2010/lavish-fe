@@ -156,6 +156,25 @@ export type UpdateUserStatusDto = {
   isActive: boolean;
 }
 
+export type CartDto = {
+  id: number;
+  productId: number;
+  productName: string;
+  thumbnailImg: string;
+  price: number;
+  quantity: number;
+}
+
+export type AddCartDto = {
+  productId: number;
+  quantity: number;
+}
+
+export type UpdateCartDto = {
+  productId: number;
+  quantity: number;
+}
+
 // TODO: Actually send {page, size, ...filter} not just only filter
 export type ProductFilter = Partial<{
   name: string;
